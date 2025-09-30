@@ -592,6 +592,7 @@
     <div id="cart" style="display: none;">
         <div class="cart-header">
             <h3>🛒 Tu Carrito de Pedido</h3>
+            <button id="close-cart-button" style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: #dc3545;">&times;</button>
         </div>
         
         <ul id="cart-items">
@@ -1248,7 +1249,9 @@
                 
                 // Vuelve a mostrar el carrito después de un breve tiempo
                 setTimeout(() => {
-                    document.getElementById('cart').style.display = 'block'; 
+                    // Nota: Si el usuario cerró el carrito manualmente con el botón 'X', no lo reabrimos.
+                    // Si el panel de carrito se oculta temporalmente para la impresión.
+                    // document.getElementById('cart').style.display = 'block'; 
                 }, 500); 
             }, 50); // Delay de 50ms
         }
@@ -1313,7 +1316,11 @@
         document.getElementById('close-qr-scanner').addEventListener('click', () => {
              stopQrScanner();
         });
-
+        
+        // --- NUEVO: Event Listener para el botón de cerrar el carrito ---
+        document.getElementById('close-cart-button').addEventListener('click', () => {
+            document.getElementById('cart').style.display = 'none';
+        });
 
         // Lógica de búsqueda
         document.getElementById('search').addEventListener('input', (event) => {
