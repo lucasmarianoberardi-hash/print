@@ -30,7 +30,7 @@
             top: auto;         
             z-index: 1000;     
 
-            /* --- ESTILOS DE BARRA HORIZONTAL --- */
+            /* --- ESTILOS DE BARRA HORIZONTAL (HORIZONTALMENTE) --- */
             background-color: #333; 
             border-radius: 0;  
             padding: 5px 0;    
@@ -88,6 +88,27 @@
         /* Contenedor principal de productos */
         #products {
             padding: 20px;
+        }
+
+        /* Estilos para los contenedores de productos */
+        .category-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; 
+            justify-content: space-between;
+        }
+
+        .producto {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            width: calc(50% - 10px); /* 2 productos por fila en móvil */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         /* Contenedor de búsqueda */
@@ -226,13 +247,13 @@
         /* Media Queries para diseño responsive de productos */
         @media (min-width: 768px) {
             .producto {
-                width: calc(33.333% - 13.333px); 
+                width: calc(33.333% - 13.333px); /* 3 productos por fila */
             }
         }
         
         @media (min-width: 1024px) {
             .producto {
-                width: calc(25% - 15px); 
+                width: calc(25% - 15px); /* 4 productos por fila */
             }
         }
         
@@ -337,6 +358,9 @@
     </section>
 
     <script>
+        // Variable global para rastrear el límite de productos visibles por categoría
+        const PRODUCTS_PER_PAGE = 6; 
+        
         // FIX: Se agregó un reseteo para evitar datos corruptos en el celular
         const hasBeenReset = localStorage.getItem('cartReset');
         if (!hasBeenReset) {
@@ -355,7 +379,13 @@
         const logoSinSalUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHjYvblrFp9CXaSMblB_l1iDsTcTq9ridCqw&s';
 
         let allProducts = []; 
-        let html5QrcodeScanner = null; // Variable para la instancia del escáner
+        
+        // >>> CÓDIGO CLAVE PARA EL ESCÁNER DIRECTO <<<
+        const qrScannerContainer = document.getElementById('qr-scanner-container');
+        const qrCodeRegionId = "reader";
+        let html5QrCode = null; // Usamos Html5QrCode
+        // >>> FIN CÓDIGO CLAVE <<<
+
 
         // Constantes para la bonificación 
         const DISCOUNT_THRESHOLD_10 = 10;
@@ -363,6 +393,7 @@
         const DISCOUNT_THRESHOLD_20 = 20;
         const DISCOUNT_PERCENTAGE_20 = 0.20;
 
+        
         /**
          * Calcula el total de un artículo del carrito aplicando descuentos por cantidad.
          */
@@ -405,10 +436,12 @@
                 generateCategoryMenu(allProducts);
                 setupSmoothScrolling(); 
                 updateCartDisplay(); 
+                
+                // Inicialización de Html5QrCode
+                initializeQrCodeScanner(); 
 
             } catch (error) {
                 console.error('🔴 Error al cargar los productos:', error);
-                // Si falla la carga, esto podría ser la razón por la que no ves nada.
                 document.getElementById('products').innerHTML = '<p style="text-align:center; color: red;">Error al cargar los productos. Por favor, verifica tu conexión o la URL de la hoja de cálculo.</p>';
             }
         }
@@ -451,6 +484,7 @@
             });
         }
 
+        // >>> FUNCIÓN displayProducts CON PAGINACIÓN A 6 PRODUCTOS <<<
         function displayProducts(productsToDisplay) {
             const productsContainer = document.getElementById('products');
             productsContainer.innerHTML = ''; 
@@ -481,153 +515,184 @@
 
                 productsContainer.appendChild(categoryDiv);
 
+                const categoryProducts = categories[categoryId];
+                
+                // Lógica de Paginación
+                const initialCount = PRODUCTS_PER_PAGE;
+                let currentShownCount = initialCount; 
+                
+                // Función interna para renderizar
+                const renderCategoryProducts = (count) => {
+                    categoryProductsDiv.innerHTML = ''; // Limpiar productos anteriores
+                    categoryProducts.slice(0, count).forEach(productData => {
+                        // --- INICIO CÓDIGO DE RENDERIZADO DE PRODUCTO ---
+                        const productoDiv = document.createElement('div');
+                        productoDiv.classList.add('producto');
+                        productoDiv.dataset.nombre = productData['Nombre del Producto']; 
 
-                categories[categoryId].forEach(productData => {
-                    const productoDiv = document.createElement('div');
-                    productoDiv.classList.add('producto');
-                    productoDiv.dataset.nombre = productData['Nombre del Producto']; 
+                        const img = document.createElement('img');
+                        const imageUrl = productData['URL de la Imagen'];
+                        img.src = imageUrl;
+                        img.alt = productData['Nombre del Producto'] || 'Producto';
+                        productoDiv.appendChild(img);
 
-                    const img = document.createElement('img');
-                    const imageUrl = productData['URL de la Imagen'];
-                    img.src = imageUrl;
-                    img.alt = productData['Nombre del Producto'] || 'Producto';
-                    productoDiv.appendChild(img);
+                        img.onerror = function() {
+                            this.src = 'https://via.placeholder.com/150?text=Imagen+No+Disp.'; 
+                            this.alt = 'Imagen no disponible';
+                            this.style.border = '2px dashed red';
+                        };
 
-                    img.onerror = function() {
-                        this.src = 'https://via.placeholder.com/150?text=Imagen+No+Disp.'; 
-                        this.alt = 'Imagen no disponible';
-                        this.style.border = '2px dashed red';
-                    };
+                        const productoInfoDiv = document.createElement('div');
+                        productoInfoDiv.classList.add('producto-info');
 
-                    const productoInfoDiv = document.createElement('div');
-                    productoInfoDiv.classList.add('producto-info');
+                        const h3 = document.createElement('h3');
+                        h3.textContent = productData['Nombre del Producto'];
+                        productoInfoDiv.appendChild(h3);
 
-                    const h3 = document.createElement('h3');
-                    h3.textContent = productData['Nombre del Producto'];
-                    productoInfoDiv.appendChild(h3);
+                        const precioP = document.createElement('p');
+                        const price = parseFloat(productData.Precio);
+                        const isInStock = price > 0; 
 
-                    const precioP = document.createElement('p');
-                    const price = parseFloat(productData.Precio);
-                    const isInStock = price > 0; 
-
-                    if (!isInStock) {
-                        precioP.textContent = 'STOCK NO DISPONIBLE';
-                        precioP.classList.add('no-stock');
-                    } else {
-                        precioP.textContent = `Precio: $${price.toFixed(2)}`;
-                    }
-                    productoInfoDiv.appendChild(precioP);
-
-                    const propiedadesContainer = document.createElement('div');
-                    propiedadesContainer.classList.add('propiedades-container');
-
-                    if (productData['Sin TACC'] === 'SI') {
-                        const imgSinTacc = document.createElement('img');
-                        imgSinTacc.src = logoSinTaccUrl;
-                        imgSinTacc.alt = 'Sin TACC';
-                        imgSinTacc.classList.add('logo-propiedad');
-                        imgSinTacc.title = 'Sin TACC';
-                        propiedadesContainer.appendChild(imgSinTacc);
-                    }
-                    if (productData['Vegano'] === 'SI') {
-                        const imgVegano = document.createElement('img');
-                        imgVegano.src = logoVeganoUrl;
-                        imgVegano.alt = 'Vegano';
-                        imgVegano.classList.add('logo-propiedad');
-                        imgVegano.title = 'Vegano';
-                        propiedadesContainer.appendChild(imgVegano);
-                    }
-                    if (productData['Sin Azucar'] === 'SI') {
-                        const imgSinAzucar = document.createElement('img');
-                        imgSinAzucar.src = logoSinAzucarUrl;
-                        imgSinAzucar.alt = 'Sin Azúcar';
-                        imgSinAzucar.classList.add('logo-propiedad');
-                        imgSinAzucar.title = 'Sin Azúcar';
-                        propiedadesContainer.appendChild(imgSinAzucar);
-                    }
-                    if (productData['Sin Sal'] === 'SI') {
-                        const imgSinSal = document.createElement('img');
-                        imgSinSal.src = logoSinSalUrl;
-                        imgSinSal.alt = 'Sin Sal';
-                        imgSinSal.classList.add('logo-propiedad');
-                        imgSinSal.title = 'Sin Sal';
-                        propiedadesContainer.appendChild(imgSinSal);
-                    }
-
-                    productoInfoDiv.appendChild(propiedadesContainer);
-
-
-                    // Descripción corta y "leer más"
-                    if (productData['Descripcion']) {
-                        const descripcionContainer = document.createElement('div');
-                        descripcionContainer.classList.add('descripcion-container');
-
-                        const descripcionCompleta = productData['Descripcion'].trim();
-                        const palabras = descripcionCompleta.split(' ');
-                        const descripcionCorta = palabras.length > 10 ? palabras.slice(0, 10).join(' ') + '...' : descripcionCompleta;
-
-                        const spanCorta = document.createElement('span');
-                        spanCorta.classList.add('descripcion-corta');
-                        spanCorta.textContent = descripcionCorta;
-                        descripcionContainer.appendChild(spanCorta);
-
-                        if (palabras.length > 10) {
-                            const spanCompleta = document.createElement('span');
-                            spanCompleta.classList.add('descripcion-completa');
-                            spanCompleta.textContent = descripcionCompleta;
-                            spanCompleta.style.display = 'none'; 
-                            descripcionContainer.appendChild(spanCompleta);
-
-                            const leerMasBtn = document.createElement('button');
-                            leerMasBtn.classList.add('leer-mas-btn');
-                            leerMasBtn.innerHTML = '&#9660;'; 
-                            leerMasBtn.onclick = function() {
-                                if (spanCompleta.style.display === 'none') {
-                                    spanCompleta.style.display = 'inline';
-                                    spanCorta.style.display = 'none';
-                                    leerMasBtn.innerHTML = '&#9650;'; 
-                                } else {
-                                    spanCompleta.style.display = 'none';
-                                    spanCorta.style.display = 'inline';
-                                    leerMasBtn.innerHTML = '&#9660;';
-                                }
-                            };
-                            descripcionContainer.appendChild(leerMasBtn);
+                        if (!isInStock) {
+                            precioP.textContent = 'STOCK NO DISPONIBLE';
+                            precioP.classList.add('no-stock');
+                        } else {
+                            precioP.textContent = `Precio: $${price.toFixed(2)}`;
                         }
-                        productoInfoDiv.appendChild(descripcionContainer);
-                    }
+                        productoInfoDiv.appendChild(precioP);
 
+                        const propiedadesContainer = document.createElement('div');
+                        propiedadesContainer.classList.add('propiedades-container');
 
-                    const productoActionsDiv = document.createElement('div');
-                    productoActionsDiv.classList.add('producto-actions');
-
-                    const quantityInput = document.createElement('input');
-                    quantityInput.type = 'number';
-                    quantityInput.min = 1;
-                    quantityInput.value = 1;
-                    quantityInput.disabled = !isInStock;
-                    productoActionsDiv.appendChild(quantityInput);
-
-                    const addButton = document.createElement('button');
-                    addButton.textContent = 'Agregar';
-                    addButton.disabled = !isInStock;
-                    if (!isInStock) {
-                        addButton.classList.add('no-stock-button');
-                    }
-                    addButton.onclick = () => {
-                        const quantity = parseInt(quantityInput.value);
-                        if (quantity > 0) {
-                            addToCart(productData, quantity);
+                        // Lógica de logos (Sin TACC, Vegano, etc.)
+                        if (productData['Sin TACC'] === 'SI') {
+                            const imgSinTacc = document.createElement('img');
+                            imgSinTacc.src = logoSinTaccUrl;
+                            imgSinTacc.alt = 'Sin TACC';
+                            imgSinTacc.classList.add('logo-propiedad');
+                            imgSinTacc.title = 'Sin TACC';
+                            propiedadesContainer.appendChild(imgSinTacc);
                         }
-                    };
-                    productoActionsDiv.appendChild(addButton);
+                        if (productData['Vegano'] === 'SI') {
+                            const imgVegano = document.createElement('img');
+                            imgVegano.src = logoVeganoUrl;
+                            imgVegano.alt = 'Vegano';
+                            imgVegano.classList.add('logo-propiedad');
+                            imgVegano.title = 'Vegano';
+                            propiedadesContainer.appendChild(imgVegano);
+                        }
+                        if (productData['Sin Azucar'] === 'SI') {
+                            const imgSinAzucar = document.createElement('img');
+                            imgSinAzucar.src = logoSinAzucarUrl;
+                            imgSinAzucar.alt = 'Sin Azúcar';
+                            imgSinAzucar.classList.add('logo-propiedad');
+                            imgSinAzucar.title = 'Sin Azúcar';
+                            propiedadesContainer.appendChild(imgSinAzucar);
+                        }
+                        if (productData['Sin Sal'] === 'SI') {
+                            const imgSinSal = document.createElement('img');
+                            imgSinSal.src = logoSinSalUrl;
+                            imgSinSal.alt = 'Sin Sal';
+                            imgSinSal.classList.add('logo-propiedad');
+                            imgSinSal.title = 'Sin Sal';
+                            propiedadesContainer.appendChild(imgSinSal);
+                        }
 
-                    productoDiv.appendChild(productoInfoDiv);
-                    productoDiv.appendChild(productoActionsDiv);
-                    categoryProductsDiv.appendChild(productoDiv);
-                });
+                        productoInfoDiv.appendChild(propiedadesContainer);
+
+                        // Lógica de descripción corta y "leer más"
+                        if (productData['Descripcion']) {
+                            const descripcionContainer = document.createElement('div');
+                            descripcionContainer.classList.add('descripcion-container');
+
+                            const descripcionCompleta = productData['Descripcion'].trim();
+                            const palabras = descripcionCompleta.split(' ');
+                            const descripcionCorta = palabras.length > 10 ? palabras.slice(0, 10).join(' ') + '...' : descripcionCompleta;
+
+                            const spanCorta = document.createElement('span');
+                            spanCorta.classList.add('descripcion-corta');
+                            spanCorta.textContent = descripcionCorta;
+                            descripcionContainer.appendChild(spanCorta);
+
+                            if (palabras.length > 10) {
+                                const spanCompleta = document.createElement('span');
+                                spanCompleta.classList.add('descripcion-completa');
+                                spanCompleta.textContent = descripcionCompleta;
+                                spanCompleta.style.display = 'none'; 
+                                descripcionContainer.appendChild(spanCompleta);
+
+                                const leerMasBtn = document.createElement('button');
+                                leerMasBtn.classList.add('leer-mas-btn');
+                                leerMasBtn.innerHTML = '&#9660;'; 
+                                leerMasBtn.onclick = function() {
+                                    if (spanCompleta.style.display === 'none') {
+                                        spanCompleta.style.display = 'inline';
+                                        spanCorta.style.display = 'none';
+                                        leerMasBtn.innerHTML = '&#9650;'; 
+                                    } else {
+                                        spanCompleta.style.display = 'none';
+                                        spanCorta.style.display = 'inline';
+                                        leerMasBtn.innerHTML = '&#9660;';
+                                    }
+                                };
+                                descripcionContainer.appendChild(leerMasBtn);
+                            }
+                            productoInfoDiv.appendChild(descripcionContainer);
+                        }
+
+
+                        const productoActionsDiv = document.createElement('div');
+                        productoActionsDiv.classList.add('producto-actions');
+
+                        const quantityInput = document.createElement('input');
+                        quantityInput.type = 'number';
+                        quantityInput.min = 1;
+                        quantityInput.value = 1;
+                        quantityInput.disabled = !isInStock;
+                        productoActionsDiv.appendChild(quantityInput);
+
+                        const addButton = document.createElement('button');
+                        addButton.textContent = 'Agregar';
+                        addButton.disabled = !isInStock;
+                        if (!isInStock) {
+                            addButton.classList.add('no-stock-button');
+                        }
+                        addButton.onclick = () => {
+                            const quantity = parseInt(quantityInput.value);
+                            if (quantity > 0) {
+                                addToCart(productData, quantity);
+                            }
+                        };
+                        productoActionsDiv.appendChild(addButton);
+
+                        productoDiv.appendChild(productoInfoDiv);
+                        productoDiv.appendChild(productoActionsDiv);
+                        categoryProductsDiv.appendChild(productoDiv);
+                        // --- FIN CÓDIGO DE RENDERIZADO DE PRODUCTO ---
+                    });
+                    
+                    // Si quedan productos por mostrar, añadimos el botón "Cargar más"
+                    categoryDiv.querySelector('.load-more-btn')?.remove(); // Remover el botón viejo
+                    if (count < categoryProducts.length) {
+                        const loadMoreButton = document.createElement('button');
+                        loadMoreButton.textContent = 'Cargar más productos';
+                        loadMoreButton.classList.add('load-more-btn');
+                        loadMoreButton.style.cssText = 'width: 100%; padding: 10px; margin-top: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;';
+                        
+                        loadMoreButton.onclick = () => {
+                            // Carga 6 productos más
+                            currentShownCount += PRODUCTS_PER_PAGE; 
+                            renderCategoryProducts(currentShownCount);
+                        };
+                        categoryDiv.appendChild(loadMoreButton);
+                    }
+                };
+
+                // Renderiza la vista inicial (6 productos o todos si hay menos de 6)
+                renderCategoryProducts(initialCount); 
             });
         }
+        // >>> FIN FUNCIÓN displayProducts CON PAGINACIÓN <<<
 
         function normalizeText(text) {
             return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -820,34 +885,48 @@
             });
         }
         
-        // --- Lógica del Escáner QR (CORREGIDA) ---
-        const qrScannerContainer = document.getElementById('qr-scanner-container');
-
+        // --- Lógica del Escáner QR (CORREGIDA PARA INICIO DIRECTO) ---
+        
+        function initializeQrCodeScanner() {
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode(qrCodeRegionId);
+            }
+        }
+        
         function startQrScanner() {
-            document.getElementById('reader').innerHTML = ''; 
-            
-            // *** CORRECCIÓN CLAVE: Crear una nueva instancia cada vez ***
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", {
-                    fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    }
-                },
-                false);
+            if (!html5QrCode) {
+                initializeQrCodeScanner();
+            }
 
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            // Configuración de escaneo 
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }
+            };
+
+            // Inicia el escaneo. 
+            html5QrCode.start(
+                { facingMode: "environment" }, // Prioriza la cámara trasera
+                config,
+                onScanSuccess,
+                onScanFailure
+            )
+            .catch(err => {
+                console.error("🔴 Error al iniciar el escáner QR. Verifica permisos o HTTPS.", err);
+                // Muestra una notificación de error al usuario
+                showNotification('Error al acceder a la cámara. Asegúrate de tener permisos o usa HTTPS.');
+            });
         }
 
         function stopQrScanner() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear().catch(error => {
-                    // Ignoramos el error si el escáner ya estaba detenido
-                });
-                
-                // *** IMPORTANTE: Después de detener y limpiar, restablece la variable ***
-                html5QrcodeScanner = null; 
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop()
+                    .then(ignore => {
+                        // console.log("Escáner detenido.");
+                    })
+                    .catch(err => {
+                        // console.error("Error al detener el escáner:", err); 
+                    });
             }
             qrScannerContainer.style.display = 'none';
         }
@@ -856,22 +935,19 @@
             console.log(`Código escaneado: ${decodedText}`);
             
             const normalizedDecodedText = decodedText.toLowerCase().trim();
-            // Asume que el código QR contiene el Nombre del Producto
             const product = allProducts.find(p => p['Nombre del Producto'].toLowerCase().trim() === normalizedDecodedText);
 
             if (product) {
                 addToCart(product, 1);
                 showNotification(`Producto escaneado y agregado: ${product['Nombre del Producto']}`);
-                stopQrScanner(); 
+                stopQrScanner(); // Detiene el escáner después de un escaneo exitoso
             } else {
                 showNotification(`Producto "${decodedText}" no encontrado. Asegúrese de escanear el nombre exacto del producto.`);
             }
         }
 
         function onScanFailure(error) {
-            if (error && error.includes("No QR code found")) {
-                return;
-            }
+            // Ignorar fallos de "no se encontró QR" para evitar spam en la consola
         }
         // --- Fin Lógica del Escáner QR ---
         
@@ -903,7 +979,6 @@
             cartPanel.style.display = 'none';
             searchInput.style.display = 'none';
             categoryMenu.style.display = 'none';
-            qrScannerContainer.style.display = 'none'; 
             
             if (buttonId !== 'qr-scan-icon') {
                  stopQrScanner(); // Detiene el escáner si se pulsa otro botón
@@ -923,8 +998,9 @@
                     panelToToggle = categoryMenu;
                     break;
                 case 'qr-scan-icon':
+                    // Muestra el contenedor y Llama a la función de inicio directo
                     qrScannerContainer.style.display = 'flex'; 
-                    startQrScanner(); // Llama a la función CORREGIDA de activación
+                    startQrScanner(); 
                     break;
             }
 
