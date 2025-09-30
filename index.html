@@ -20,31 +20,24 @@
         }
 
         /* ---------------------------------------------------------------------------------- */
-        /* --- ESTILOS para fijar la barra de íconos como un FOOTER de ancho completo --- */
+        /* --- FOOTER/BARRA DE ÍCONOS FIJA --- */
         /* ---------------------------------------------------------------------------------- */
         .fixed-icons {
             position: fixed;
             bottom: 0;         /* Pegado al borde inferior */
-            left: 0;           /* Estirado al borde izquierdo */
-            right: 0;          /* Estirado al borde derecho */
+            left: 0;           
+            right: 0;          
             top: auto;         
             z-index: 1000;     
-
-            /* --- ESTILOS DE BARRA HORIZONTAL (HORIZONTALMENTE) --- */
             background-color: #333; 
-            border-radius: 0;  
             padding: 5px 0;    
-            
-            /* ORGANIZACIÓN HORIZONTAL Y RESPONSIVE: Flexbox es clave */
             display: flex; 
-            flex-direction: row; /* Coloca los elementos en fila */
-            justify-content: space-around; /* Distribuye el espacio entre los íconos */
+            flex-direction: row; 
+            justify-content: space-around; 
             align-items: center; 
-            
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4); /* Sombra hacia arriba */
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4); 
         }
 
-        /* Estilo para los botones individuales dentro de la barra fija */
         .fixed-icons button {
             background-color: transparent; 
             color: white; 
@@ -52,22 +45,17 @@
             padding: 10px 5px; 
             margin: 0;
             cursor: pointer;
-            border-radius: 0; 
             flex-grow: 1;     
             text-align: center;
             position: relative; 
             transition: background-color 0.3s ease;
         }
 
-        /* Efecto hover/focus */
         .fixed-icons button:hover,
         .fixed-icons button:focus {
             background-color: rgba(255, 255, 255, 0.2); 
         }
-        /* ---------------------------------------------------------------------------------- */
-        /* --- FIN ESTILOS FOOTER --- */
-        /* ---------------------------------------------------------------------------------- */
-        
+
         /* Estilo para el contador del carrito */
         #cart-count {
             position: absolute;
@@ -104,7 +92,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 15px;
             text-align: center;
-            width: calc(50% - 10px); /* 2 productos por fila en móvil */
+            width: calc(50% - 10px); 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -214,11 +202,11 @@
         }
         
         #print-cart-button {
-            background-color: #007bff; /* Color azul para imprimir */
+            background-color: #007bff; 
         }
         
         #send-order-button {
-            background-color: #25D366; /* WhatsApp Green */
+            background-color: #25D366; 
         }
 
         /* Contenedor del Escáner QR */
@@ -247,18 +235,18 @@
         /* Media Queries para diseño responsive de productos */
         @media (min-width: 768px) {
             .producto {
-                width: calc(33.333% - 13.333px); /* 3 productos por fila */
+                width: calc(33.333% - 13.333px); 
             }
         }
         
         @media (min-width: 1024px) {
             .producto {
-                width: calc(25% - 15px); /* 4 productos por fila */
+                width: calc(25% - 15px); 
             }
         }
         
         /* ======================================================= */
-        /* === ESTILOS ESPECÍFICOS PARA LA IMPRESIÓN (80MM) === */
+        /* === ESTILOS ESPECÍFICOS PARA LA IMPRESIÓN (TICKET) === */
         /* ======================================================= */
         @media print {
             /* 1. Ocultar todo lo que no sea el contenido del ticket */
@@ -356,7 +344,6 @@
         </div>
     </div>
 
-
     <div id="cart" aria-labelledby="cart-icon">
         <div class="cart-header">
             <h2>Mi Carrito</h2>
@@ -377,7 +364,7 @@
     </div>
 
     <section id="products" class="container">
-    </section>
+        </section>
 
     <script>
         // Variable global para rastrear el límite de productos visibles por categoría
@@ -391,9 +378,9 @@
         }
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // >>> URL ACTUALIZADA CON TU NUEVA COPIA <<<
+        // >>> URL CON TU ID DE PUBLICACIÓN <<<
         const productsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtRvbHZgDDAVSfbF5R7HlIrv_2w8_ZZOx87Ssf96f9-5mBIIhg3_qofvXaK0TElyogxjN7BI7PJn2l/pub?gid=1169053887&single=true&output=csv';
-        // <<< FIN URL ACTUALIZADA >>>
+        // <<< FIN URL >>>
 
         // URLs de logos (reemplazar con las URLs reales)
         const logoSinTaccUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5T7nDfaM_05QQOmcKUhuZoU6CnTZt0Ig9bQ&s';
@@ -403,11 +390,9 @@
 
         let allProducts = []; 
         
-        // >>> CÓDIGO CLAVE PARA EL ESCÁNER DIRECTO <<<
         const qrScannerContainer = document.getElementById('qr-scanner-container');
         const qrCodeRegionId = "reader";
-        let html5QrCode = null; // Usamos Html5QrCode
-        // >>> FIN CÓDIGO CLAVE <<<
+        let html5QrCode = null; 
 
         // Constantes para la bonificación 
         const DISCOUNT_THRESHOLD_10 = 10;
@@ -439,19 +424,23 @@
                 discountMessage: discountMessage
             };
         }
-        // ----------------------------------------------------------------------
-
 
         // --- Funciones principales de la aplicación ---
 
         async function loadProducts() {
             try {
                 const response = await fetch(productsUrl);
+                
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status}. Verifica que la URL de publicación esté bien generada.`);
                 }
                 const csvData = await response.text();
+                
                 allProducts = parseCSV(csvData);
+                
+                if (allProducts.length === 0) {
+                     throw new Error("El archivo está vacío o solo contiene encabezados.");
+                }
 
                 // Después de cargar y parsear, actualiza la UI
                 displayProducts(allProducts); // MUESTRA TODOS LOS PRODUCTOS AL INICIO
@@ -459,12 +448,23 @@
                 setupSmoothScrolling(); 
                 updateCartDisplay(); 
                 
-                // Inicialización de Html5QrCode
                 initializeQrCodeScanner(); 
 
             } catch (error) {
                 console.error('🔴 Error al cargar los productos:', error);
-                document.getElementById('products').innerHTML = '<p style="text-align:center; color: red;">Error al cargar los productos. Por favor, verifica tu conexión o la URL de la hoja de cálculo.</p>';
+                
+                document.getElementById('products').innerHTML = `
+                    <div style="text-align:center; padding: 20px; background-color: #ffe0e0; border: 1px solid red; border-radius: 8px;">
+                        <p style="color: red; font-weight: bold;">❌ ERROR CRÍTICO DE CARGA ❌</p>
+                        <p>No se pudieron cargar los productos. Posibles causas:</p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li>La URL de Google Sheets es incorrecta.</li>
+                            <li>El documento fue despublicado.</li>
+                            <li>El navegador bloqueó la conexión (error CORS).</li>
+                        </ul>
+                        <p style="font-size: 0.9em;">Revisa la consola de desarrollador para más detalles: ${error.message}</p>
+                    </div>
+                `;
             }
         }
 
@@ -480,13 +480,15 @@
                 const values = lines[i].split(',');
                 const product = {};
                 if (values.length !== headers.length) {
-                    console.warn(`🟡 Línea CSV mal formada:`, lines[i]);
+                    console.warn(`🟡 Línea CSV mal formada o saltada:`, lines[i]);
                     continue; 
                 }
                 for (let j = 0; j < headers.length; j++) {
                     product[headers[j]] = values[j] ? values[j].trim() : '';
                 }
-                products.push(product);
+                if (product[headers[0]] && product[headers[0]].trim() !== '') {
+                    products.push(product);
+                }
             }
             return products;
         }
@@ -501,7 +503,6 @@
                 const link = document.createElement('a');
                 link.href = `#${normalizeText(category)}`; 
                 
-                // Limpiamos los emojis/símbolos solo para la visualización del menú
                 link.textContent = category.replace(/[\uD800-\uDBFF\uDC00-\uDFFF\u2700-\u27BF\u2600-\u26FF\uFE00-\uFE0F]/g, '').trim(); 
                 
                 listItem.appendChild(link);
@@ -509,7 +510,6 @@
             });
         }
 
-        // >>> FUNCIÓN displayProducts CON PAGINACIÓN A 6 PRODUCTOS <<<
         function displayProducts(productsToDisplay) {
             const productsContainer = document.getElementById('products');
             productsContainer.innerHTML = ''; 
@@ -529,7 +529,6 @@
                 let categoryDiv = document.createElement('div');
                 categoryDiv.classList.add('category');
                 
-                // EL ID AHORA USA LA FUNCIÓN MEJORADA PARA FUNCIONAR COMO ANCLA
                 categoryDiv.id = normalizedCategoryId;
 
                 const h2 = document.createElement('h2');
@@ -544,15 +543,12 @@
 
                 const categoryProducts = categories[categoryId];
                 
-                // Lógica de Paginación
                 const initialCount = PRODUCTS_PER_PAGE;
                 let currentShownCount = initialCount; 
                 
-                // Función interna para renderizar
                 const renderCategoryProducts = (count) => {
-                    categoryProductsDiv.innerHTML = ''; // Limpiar productos anteriores
+                    categoryProductsDiv.innerHTML = ''; 
                     categoryProducts.slice(0, count).forEach(productData => {
-                        // --- INICIO CÓDIGO DE RENDERIZADO DE PRODUCTO ---
                         const productoDiv = document.createElement('div');
                         productoDiv.classList.add('producto');
                         productoDiv.dataset.nombre = productData['Nombre del Producto']; 
@@ -695,11 +691,9 @@
                         productoDiv.appendChild(productoInfoDiv);
                         productoDiv.appendChild(productoActionsDiv);
                         categoryProductsDiv.appendChild(productoDiv);
-                        // --- FIN CÓDIGO DE RENDERIZADO DE PRODUCTO ---
                     });
                     
-                    // Si quedan productos por mostrar, añadimos el botón "Cargar más"
-                    categoryDiv.querySelector('.load-more-btn')?.remove(); // Remover el botón viejo
+                    categoryDiv.querySelector('.load-more-btn')?.remove(); 
                     if (count < categoryProducts.length) {
                         const loadMoreButton = document.createElement('button');
                         loadMoreButton.textContent = 'Cargar más productos';
@@ -707,7 +701,6 @@
                         loadMoreButton.style.cssText = 'width: 100%; padding: 10px; margin-top: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;';
                         
                         loadMoreButton.onclick = () => {
-                            // Carga 6 productos más
                             currentShownCount += PRODUCTS_PER_PAGE; 
                             renderCategoryProducts(currentShownCount);
                         };
@@ -715,25 +708,17 @@
                     }
                 };
 
-                // Renderiza la vista inicial (6 productos o todos si hay menos de 6)
                 renderCategoryProducts(initialCount); 
             });
         }
-        // >>> FIN FUNCIÓN displayProducts CON PAGINACIÓN <<<
 
-        // >>> FUNCIÓN normalizeText CORREGIDA PARA ENLACES SEGUROS <<<
         function normalizeText(text) {
-            // 1. Convertir a minúsculas.
-            // 2. Reemplazar caracteres que no sean letras, números o espacios con un guion.
-            // 3. Reemplazar cualquier espacio o grupo de guiones con un solo guion.
-            // 4. Eliminar guiones al inicio o al final.
             return text
                 .toLowerCase()
                 .replace(/[^a-z0-9\s-]/g, '') 
                 .replace(/[\s-]+/g, '-')
                 .replace(/^-+|-+$/g, '');
         }
-        // <<< FIN FUNCIÓN CORREGIDA >>>
 
         function addToCart(product, quantity = 1) {
             const existingItem = cart.find(item => item.name === product['Nombre del Producto']);
@@ -805,7 +790,6 @@
             oldCartItemsContainer.parentNode.replaceChild(newCartItemsContainer, oldCartItemsContainer);
             attachCartEventListeners();
             
-            // === GENERACIÓN DEL CONTENIDO PARA IMPRESIÓN (TICKET) ===
             let printContent = `
                 <div class="print-ticket">
                     <h1 style="text-align: center; font-size: 1.2em; margin-bottom: 5px;">DIETÉTICA VIRGILIO</h1>
@@ -914,7 +898,6 @@
             document.querySelectorAll('.menu-desplegable-contenido ul li a').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Utiliza el `href` que ahora es un ancla limpia
                     const targetId = this.getAttribute('href'); 
                     const targetElement = document.querySelector(targetId);
                     
@@ -929,27 +912,24 @@
             });
         }
         
-        // --- Lógica del Escáner QR (CORREGIDA PARA INICIO DIRECTO) ---
+        // --- Lógica del Escáner QR ---
         
         function initializeQrCodeScanner() {
-             // Solo inicializa la librería una vez si aún no existe
             if (!html5QrCode) {
                 html5QrCode = new Html5Qrcode(qrCodeRegionId);
             }
         }
         
         function startQrScanner() {
-            initializeQrCodeScanner(); // Asegura que la clase esté lista
+            initializeQrCodeScanner(); 
 
-            // Configuración de escaneo 
             const config = {
                 fps: 10,
                 qrbox: { width: 250, height: 250 }
             };
 
-            // Inicia el escaneo. La llamada debe ser robusta.
             html5QrCode.start(
-                { facingMode: "environment" }, // Prioriza la cámara trasera
+                { facingMode: "environment" }, 
                 config,
                 onScanSuccess,
                 onScanFailure
@@ -957,19 +937,16 @@
             .catch(err => {
                 console.error("🔴 Error al iniciar el escáner QR. Verifica permisos o HTTPS.", err);
                 showNotification('Error al acceder a la cámara. Asegúrate de tener permisos o usa HTTPS.');
-                stopQrScanner(); // Cierra el contenedor si falla
+                stopQrScanner(); 
             });
         }
 
         function stopQrScanner() {
             if (html5QrCode && html5QrCode.isScanning) {
-                // Usa una función de envoltura para manejar la promesa de stop()
                 html5QrCode.stop()
-                    .then(() => { 
-                        // Éxito al detener
-                    })
+                    .then(() => {})
                     .catch(err => {
-                        console.warn("Advertencia al detener el escáner (puede que ya estuviera detenido):", err); 
+                        console.warn("Advertencia al detener el escáner:", err); 
                     });
             }
             qrScannerContainer.style.display = 'none';
@@ -979,20 +956,18 @@
             console.log(`Código escaneado: ${decodedText}`);
             
             const normalizedDecodedText = decodedText.toLowerCase().trim();
-            // Intenta encontrar el producto por su nombre
             const product = allProducts.find(p => p['Nombre del Producto'].toLowerCase().trim() === normalizedDecodedText);
 
             if (product) {
                 addToCart(product, 1);
                 showNotification(`Producto escaneado y agregado: ${product['Nombre del Producto']}`);
-                stopQrScanner(); // Detiene el escáner después de un escaneo exitoso
+                stopQrScanner(); 
             } else {
                 showNotification(`Producto "${decodedText}" no encontrado. Asegúrese de escanear el nombre exacto del producto.`);
             }
         }
 
         function onScanFailure(error) {
-            // Ignorar fallos de "no se encontró QR" para evitar spam en la consola
         }
         // --- Fin Lógica del Escáner QR ---
         
@@ -1004,7 +979,6 @@
             }
 
             document.getElementById('cart').style.display = 'none';
-
             window.print();
             
             setTimeout(() => {
@@ -1013,7 +987,7 @@
         }
 
 
-        // >>> FUNCIÓN DE MANEJO DE CLIC CORREGIDA PARA QR <<<
+        // >>> FUNCIÓN DE MANEJO DE CLIC (CORREGIDA PARA QR) <<<
         function handleButtonClick(event) {
             const buttonId = event.currentTarget.id;
             const cartPanel = document.getElementById('cart');
@@ -1031,7 +1005,6 @@
                  stopQrScanner();
             }
 
-
             let panelToToggle = null;
 
             switch (buttonId) {
@@ -1045,10 +1018,10 @@
                     panelToToggle = categoryMenu;
                     break;
                 case 'qr-scan-icon':
-                    // Lógica de Escáner: Muestra el contenedor y LLAMA A START
+                    // Muestra el contenedor y LLAMA A START
                     qrScannerContainer.style.display = 'flex'; 
-                    startQrScanner(); // <<<<<<<<<<<<< LLAMADA DIRECTA
-                    return; // Detiene la ejecución aquí para no ocultar el escáner inmediatamente
+                    startQrScanner(); 
+                    return; 
             }
 
             if (panelToToggle) {
@@ -1056,10 +1029,10 @@
                 panelToToggle.style.display = isHidden ? 'block' : 'none';
             }
         }
-        // >>> FIN FUNCIÓN DE MANEJO DE CLIC CORREGIDA <<<
+        // >>> FIN FUNCIÓN DE MANEJO DE CLIC <<<
 
 
-        // Event Listener para volver arriba (el ícono del footer)
+        // Event Listener para volver arriba
         document.getElementById('scroll-top-icon').addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
@@ -1067,7 +1040,7 @@
             });
         });
         
-        // Event Listeners para los botones de la barra fija y el nuevo botón de impresión
+        // Event Listeners para los botones
         document.getElementById('cart-icon').addEventListener('click', handleButtonClick);
         document.getElementById('search-icon').addEventListener('click', handleButtonClick);
         document.getElementById('category-icon').addEventListener('click', handleButtonClick);
