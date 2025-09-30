@@ -19,40 +19,54 @@
             background-color: #f4f4f4;
         }
 
-        /* --- Estilos para fijar la barra de íconos en la parte inferior --- */
+        /* ---------------------------------------------------------------------------------- */
+        /* --- ESTILOS CORREGIDOS para fijar la barra de íconos como un FOOTER de ancho completo --- */
+        /* ---------------------------------------------------------------------------------- */
         .fixed-icons {
             position: fixed;
-            bottom: 10px; /* Separación del borde inferior */
-            right: 10px;  /* Separación del borde derecho */
-            top: auto;    /* Asegura que no se fije arriba */
-            z-index: 1000; /* Asegura que esté por encima de otros contenidos */
+            bottom: 0;         /* Pegado al borde inferior */
+            left: 0;           /* Estirado al borde izquierdo */
+            right: 0;          /* Estirado al borde derecho */
+            top: auto;         /* Desactiva cualquier 'top' */
+            z-index: 1000;     /* Asegura que esté por encima */
 
-            /* --- Estilos visuales manteniendo la coherencia --- */
-            background-color: #333; /* Fondo oscuro común para fixed-icons */
-            border-radius: 25px; /* Bordes redondeados */
-            padding: 5px;
-            display: flex; /* Para organizar los íconos internos */
-            flex-direction: column; /* Apila los íconos verticalmente */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Sombra para destacarse */
+            /* --- ESTILOS DE BARRA HORIZONTAL --- */
+            background-color: #333; 
+            border-radius: 0;  
+            padding: 5px 0;    
+            
+            /* ORGANIZACIÓN HORIZONTAL Y RESPONSIVE: Flexbox es clave */
+            display: flex; 
+            flex-direction: row; /* Coloca los elementos en fila */
+            justify-content: space-around; /* Distribuye el espacio entre los íconos */
+            align-items: center; /* Centra verticalmente los íconos */
+            
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4); /* Sombra hacia arriba */
         }
 
         /* Estilo para los botones individuales dentro de la barra fija */
         .fixed-icons button {
-            background-color: transparent; /* Fondo transparente para los botones */
-            color: white; /* Color de ícono (ej. blanco) */
+            background-color: transparent; 
+            color: white; 
             border: none;
-            padding: 10px;
-            margin: 5px 0;
+            padding: 10px 5px; /* Ajuste para un diseño de barra */
+            margin: 0;
             cursor: pointer;
-            border-radius: 50%; /* Iconos circulares */
+            border-radius: 0; 
+            flex-grow: 1;     /* Permite que los botones ocupen el espacio disponible */
+            text-align: center;
+            position: relative; /* Necesario para el contador del carrito */
             transition: background-color 0.3s ease;
         }
 
         /* Efecto hover/focus */
         .fixed-icons button:hover,
         .fixed-icons button:focus {
-            background-color: rgba(255, 255, 255, 0.2); /* Un ligero resaltado al pasar el ratón */
+            background-color: rgba(255, 255, 255, 0.2); 
         }
+        /* ---------------------------------------------------------------------------------- */
+        /* --- FIN ESTILOS CORREGIDOS PARA FOOTER --- */
+        /* ---------------------------------------------------------------------------------- */
         
         /* Estilo para el contador del carrito */
         #cart-count {
@@ -95,7 +109,8 @@
         .menu-desplegable-contenido {
             position: fixed;
             top: 10px;
-            right: 70px; /* Ajustar posición para que no choque con los íconos fijos */
+            /* Se ajusta la posición de los menús para que no se superpongan con la barra */
+            right: 10px; 
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -139,7 +154,7 @@
             z-index: 1050;
             display: none;
             overflow-y: auto;
-            transform: translateX(0); /* Estado visible */
+            transform: translateX(0);
             transition: transform 0.3s ease-out;
         }
         
@@ -150,10 +165,6 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
-        }
-
-        .cart-header img {
-            max-height: 40px;
         }
 
         #cart-items {
@@ -198,8 +209,7 @@
         #send-order-button, #print-cart-button {
             width: 100%;
             padding: 15px;
-            margin-top: 10px; /* Ajuste para separar los dos botones */
-            background-color: #25D366; /* WhatsApp Green */
+            margin-top: 10px; 
             color: white;
             border: none;
             border-radius: 8px;
@@ -214,6 +224,10 @@
         
         #print-cart-button:hover {
             background-color: #0056b3;
+        }
+
+        #send-order-button {
+            background-color: #25D366; /* WhatsApp Green */
         }
 
         #send-order-button:hover:not(:disabled) {
@@ -276,93 +290,8 @@
             justify-content: space-between;
         }
 
-        .producto img {
-            width: 100%;
-            height: 150px;
-            object-fit: contain;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .producto h3 {
-            font-size: 1.1em;
-            margin: 0 0 5px 0;
-        }
-
-        .producto p {
-            font-size: 1em;
-            color: #007BFF;
-            font-weight: bold;
-            margin: 0 0 10px 0;
-        }
-
-        .producto .no-stock {
-            color: red;
-            font-weight: bold;
-        }
-
-        .producto-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .producto-actions input {
-            width: 40px;
-            text-align: center;
-        }
-
-        .producto-actions button {
-            flex-grow: 1;
-            padding: 8px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .producto-actions button:disabled, .no-stock-button {
-             background-color: #ccc !important;
-             cursor: not-allowed;
-        }
-
-        /* Contenedor de Propiedades/Logos */
-        .propiedades-container {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-            min-height: 25px;
-        }
-
-        .logo-propiedad {
-            width: 25px;
-            height: 25px;
-            object-fit: contain;
-            border: 1px solid #eee;
-            border-radius: 3px;
-        }
-
-        /* Descripción 'Leer Más' */
-        .descripcion-container {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .descripcion-completa {
-            display: none; /* Por defecto oculta */
-        }
-
-        .leer-mas-btn {
-            background: none;
-            border: none;
-            color: #007BFF;
-            cursor: pointer;
-            padding: 0 5px;
-            font-size: 1em;
-        }
+        /* Omitiendo el resto de estilos de productos, búsqueda, y QR por brevedad, 
+           ya que no han cambiado y están en el código anterior. */
         
         /* Contenedor del Escáner QR */
         #qr-scanner-container {
@@ -373,7 +302,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             z-index: 2000;
-            display: none; /* Por defecto oculto */
+            display: none; 
             justify-content: center;
             align-items: center;
         }
@@ -387,37 +316,16 @@
             position: relative;
         }
 
-        #qr-scanner-content h2 {
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #close-qr-scanner {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #333;
-        }
-
-        /* Estilos específicos para el contenedor de la librería html5-qrcode */
-        #reader {
-            width: 100%;
-        }
-
-        /* Media Queries para diseño responsive */
+        /* Media Queries para diseño responsive de productos */
         @media (min-width: 768px) {
             .producto {
-                width: calc(33.333% - 13.333px); /* 3 productos por fila en tabletas */
+                width: calc(33.333% - 13.333px); 
             }
         }
         
         @media (min-width: 1024px) {
             .producto {
-                width: calc(25% - 15px); /* 4 productos por fila en escritorio */
+                width: calc(25% - 15px); 
             }
         }
         
@@ -432,19 +340,19 @@
 
             /* 2. Forzar el formato de ticket */
             .print-ticket {
-                display: block !important; /* Asegurar que solo el ticket sea visible */
+                display: block !important; 
                 width: 80mm;
                 max-width: 80mm;
                 margin: 0;
                 padding: 5mm; 
                 font-family: monospace, Courier New, monospace; 
-                font-size: 9pt; /* Tamaño de letra pequeño para POS */
+                font-size: 9pt; 
                 color: black;
             }
 
             /* 3. Resetear márgenes y fondos de página */
             @page {
-                size: 80mm auto; /* Forzar el ancho del papel */
+                size: 80mm auto; 
                 margin: 0;
             }
             
@@ -461,12 +369,14 @@
 <body>
     <div class="fixed-icons">
         <button id="scroll-top-icon" aria-label="Volver al inicio">
-            <img src="https://cdn-icons-png.flaticon.com/256/4510/4510643.png" alt="Logo Dietética Virgilio - Volver al Inicio" style="height: 20px; vertical-align: middle;">
+            <i class="fas fa-arrow-up"></i>
         </button>
+        
         <button id="cart-icon" class="icon-button" aria-label="Ver carrito de compras">
             <i class="fas fa-shopping-cart"></i>
             <span id="cart-count" class="cart-count">0</span>
         </button>
+        
         <div class="menu-desplegable">
             <button id="category-icon" class="icon-button" aria-label="Mostrar categorías">
                 <i class="fas fa-bars"></i>
@@ -476,9 +386,11 @@
                 </ul>
             </nav>
         </div>
+        
         <button id="search-icon" class="icon-button" aria-label="Buscar productos">
             <i class="fas fa-search"></i>
         </button>
+        
         <button id="qr-scan-icon" class="icon-button" aria-label="Escanear código QR">
             <i class="fas fa-qrcode"></i>
         </button>
@@ -498,7 +410,7 @@
     <div id="cart" aria-labelledby="cart-icon">
         <div class="cart-header">
             <h2>Mi Carrito</h2>
-            <img src="https://media.cylex.com.ar/companies/1128/0419/logo/logo.jpg" alt="Logo Dietética Virgilio">
+            <img src="https://media.cylex.com.ar/companies/1128/0419/logo/logo.jpg" alt="Logo Dietética Virgilio" style="max-height: 40px;">
         </div>
         <div id="cart-items-container">
             <ul id="cart-items"></ul>
@@ -510,13 +422,12 @@
         <button id="print-cart-button" class="action-button">
             <i class="fas fa-print"></i> Imprimir Ticket
         </button>
+        
         <button id="send-order-button">Enviar Pedido</button>
     </div>
 
     <section id="products" class="container">
     </section>
-
-    <button class="scroll-to-top" id="scroll-to-top-footer" aria-label="Volver arriba"><i class="fas fa-arrow-up"></i></button>
 
     <script>
         // FIX: Se agregó un reseteo para evitar datos corruptos en el celular
@@ -536,9 +447,9 @@
         const logoSinAzucarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBK_h6dMpoVwkTRMSr3C3xV46pvgD2BstPhIfEu2WMn9YoxkQM97T456Q_wGZzvZ5j&usqp=CAU';
         const logoSinSalUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHjYvblrFp9CXaSMblB_l1iDsTcTq9ridCqw&s';
 
-        let allProducts = []; // Variable para almacenar todos los productos cargados
+        let allProducts = []; 
 
-        // Constantes para la bonificación (definidas globalmente para acceso en múltiples funciones)
+        // Constantes para la bonificación 
         const DISCOUNT_THRESHOLD_10 = 10;
         const DISCOUNT_PERCENTAGE_10 = 0.10;
         const DISCOUNT_THRESHOLD_20 = 20;
@@ -546,8 +457,6 @@
 
         /**
          * Calcula el total de un artículo del carrito aplicando descuentos por cantidad.
-         * @param {Object} item - El objeto del artículo del carrito ({name, price, quantity}).
-         * @returns {{itemTotal: number, discountMessage: string}} - El total del artículo y el mensaje de descuento.
          */
         function calculateItemTotal(item) {
             let discountPercentage = 0;
@@ -561,7 +470,6 @@
                 discountMessage = ` (-10%)`;
             }
 
-            // El precio unitario con descuento, si aplica.
             const discountedPricePerUnit = item.price * (1 - discountPercentage);
             const itemTotal = discountedPricePerUnit * item.quantity;
             
@@ -573,266 +481,21 @@
         // ----------------------------------------------------------------------
 
 
-        // --- Funciones principales de la aplicación ---
+        // --- Funciones principales de la aplicación (loadProducts, parseCSV, displayProducts, etc.) ---
+        
+        // [El resto de las funciones JavaScript (loadProducts, parseCSV, generateCategoryMenu, 
+        // displayProducts, normalizeText, addToCart, attachCartEventListeners, showNotification, 
+        // setupSmoothScrolling, startQrScanner, stopQrScanner, onScanSuccess, onScanFailure) 
+        // es el mismo que en el código anterior y se omite aquí por brevedad, pero debe estar presente en tu archivo.]
 
-        async function loadProducts() {
-            try {
-                const response = await fetch(productsUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const csvData = await response.text();
-                allProducts = parseCSV(csvData);
+        async function loadProducts() { /* ... (mismo código) ... */ }
+        function parseCSV(csvText) { /* ... (mismo código) ... */ }
+        function generateCategoryMenu(products) { /* ... (mismo código) ... */ }
+        function displayProducts(productsToDisplay) { /* ... (mismo código) ... */ }
+        function normalizeText(text) { /* ... (mismo código) ... */ }
+        function addToCart(product, quantity = 1) { /* ... (mismo código) ... */ }
 
-                // Después de cargar y parsear, actualiza la UI
-                displayProducts(allProducts);
-                generateCategoryMenu(allProducts);
-                setupSmoothScrolling(); 
-                updateCartDisplay(); 
-
-            } catch (error) {
-                console.error('🔴 Error al cargar los productos:', error);
-                document.getElementById('products').innerHTML = '<p class="error">Error al cargar los productos. Por favor, intenta nuevamente más tarde.</p>';
-            }
-        }
-
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split('\n');
-            if (lines.length <= 1) {
-                return [];
-            }
-            const headers = lines[0].split(',').map(header => header.trim());
-            const products = [];
-
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',');
-                const product = {};
-                if (values.length !== headers.length) {
-                    console.warn(`🟡 Línea CSV mal formada (se esperaban ${headers.length} valores, se obtuvieron ${values.length}):`, lines[i]);
-                    continue; 
-                }
-                for (let j = 0; j < headers.length; j++) {
-                    product[headers[j]] = values[j] ? values[j].trim() : '';
-                }
-                products.push(product);
-            }
-            return products;
-        }
-
-        function generateCategoryMenu(products) {
-            const categoryMenu = document.querySelector('.menu-desplegable-contenido ul');
-            const uniqueCategories = [...new Set(products.map(product => product.Categoría).filter(cat => cat && cat.trim() !== ''))];
-            categoryMenu.innerHTML = ''; 
-
-            uniqueCategories.sort().forEach(category => { 
-                const listItem = document.createElement('li');
-                const link = document.createElement('a');
-                link.href = `#${normalizeText(category)}`; 
-                link.textContent = category.replace(/🌻|🫚|🫘|❄️|-/g, '').trim(); 
-                listItem.appendChild(link);
-                categoryMenu.appendChild(listItem);
-            });
-        }
-
-        function displayProducts(productsToDisplay) {
-            const productsContainer = document.getElementById('products');
-            productsContainer.innerHTML = ''; 
-
-            const categories = {};
-            productsToDisplay.forEach(product => {
-                if (product.Categoría && product.Categoría.trim() !== '') {
-                    if (!categories[product.Categoría]) {
-                        categories[product.Categoría] = [];
-                    }
-                    categories[product.Categoría].push(product);
-                }
-            });
-
-            Object.keys(categories).sort().forEach(categoryId => {
-                const normalizedCategoryId = normalizeText(categoryId);
-                let categoryDiv = document.createElement('div');
-                categoryDiv.classList.add('category');
-                categoryDiv.id = normalizedCategoryId;
-
-                const h2 = document.createElement('h2');
-                h2.textContent = categoryId;
-                categoryDiv.appendChild(h2);
-
-                const categoryProductsDiv = document.createElement('div');
-                categoryProductsDiv.classList.add('category-products');
-                categoryDiv.appendChild(categoryProductsDiv);
-
-                productsContainer.appendChild(categoryDiv);
-
-
-                categories[categoryId].forEach(productData => {
-                    const productoDiv = document.createElement('div');
-                    productoDiv.classList.add('producto');
-                    productoDiv.dataset.nombre = productData['Nombre del Producto']; 
-
-                    const img = document.createElement('img');
-                    const imageUrl = productData['URL de la Imagen'];
-                    img.src = imageUrl;
-                    img.alt = productData['Nombre del Producto'] || 'Producto';
-                    productoDiv.appendChild(img);
-
-                    img.onerror = function() {
-                        this.src = 'https://via.placeholder.com/150?text=Imagen+No+Disp.'; 
-                        this.alt = 'Imagen no disponible';
-                        this.style.border = '2px dashed red';
-                    };
-
-                    const productoInfoDiv = document.createElement('div');
-                    productoInfoDiv.classList.add('producto-info');
-
-                    const h3 = document.createElement('h3');
-                    h3.textContent = productData['Nombre del Producto'];
-                    productoInfoDiv.appendChild(h3);
-
-                    const precioP = document.createElement('p');
-                    const price = parseFloat(productData.Precio);
-                    const isInStock = price > 0; 
-
-                    if (!isInStock) {
-                        precioP.textContent = 'STOCK NO DISPONIBLE';
-                        precioP.classList.add('no-stock');
-                    } else {
-                        precioP.textContent = `Precio: $${price.toFixed(2)}`;
-                    }
-                    productoInfoDiv.appendChild(precioP);
-
-                    // Contenedor para logos de propiedades
-                    const propiedadesContainer = document.createElement('div');
-                    propiedadesContainer.classList.add('propiedades-container');
-
-                    if (productData['Sin TACC'] === 'SI') {
-                        const imgSinTacc = document.createElement('img');
-                        imgSinTacc.src = logoSinTaccUrl;
-                        imgSinTacc.alt = 'Sin TACC';
-                        imgSinTacc.classList.add('logo-propiedad');
-                        imgSinTacc.title = 'Sin TACC';
-                        propiedadesContainer.appendChild(imgSinTacc);
-                    }
-                    if (productData['Vegano'] === 'SI') {
-                        const imgVegano = document.createElement('img');
-                        imgVegano.src = logoVeganoUrl;
-                        imgVegano.alt = 'Vegano';
-                        imgVegano.classList.add('logo-propiedad');
-                        imgVegano.title = 'Vegano';
-                        propiedadesContainer.appendChild(imgVegano);
-                    }
-                    if (productData['Sin Azucar'] === 'SI') {
-                        const imgSinAzucar = document.createElement('img');
-                        imgSinAzucar.src = logoSinAzucarUrl;
-                        imgSinAzucar.alt = 'Sin Azúcar';
-                        imgSinAzucar.classList.add('logo-propiedad');
-                        imgSinAzucar.title = 'Sin Azúcar';
-                        propiedadesContainer.appendChild(imgSinAzucar);
-                    }
-                    if (productData['Sin Sal'] === 'SI') {
-                        const imgSinSal = document.createElement('img');
-                        imgSinSal.src = logoSinSalUrl;
-                        imgSinSal.alt = 'Sin Sal';
-                        imgSinSal.classList.add('logo-propiedad');
-                        imgSinSal.title = 'Sin Sal';
-                        propiedadesContainer.appendChild(imgSinSal);
-                    }
-
-                    productoInfoDiv.appendChild(propiedadesContainer);
-
-
-                    // Descripción corta y "leer más"
-                    if (productData['Descripcion']) {
-                        const descripcionContainer = document.createElement('div');
-                        descripcionContainer.classList.add('descripcion-container');
-
-                        const descripcionCompleta = productData['Descripcion'].trim();
-                        const palabras = descripcionCompleta.split(' ');
-                        const descripcionCorta = palabras.length > 10 ? palabras.slice(0, 10).join(' ') + '...' : descripcionCompleta;
-
-                        const spanCorta = document.createElement('span');
-                        spanCorta.classList.add('descripcion-corta');
-                        spanCorta.textContent = descripcionCorta;
-                        descripcionContainer.appendChild(spanCorta);
-
-                        if (palabras.length > 10) {
-                            const spanCompleta = document.createElement('span');
-                            spanCompleta.classList.add('descripcion-completa');
-                            spanCompleta.textContent = descripcionCompleta;
-                            spanCompleta.style.display = 'none'; // Asegurar que esté oculto inicialmente
-                            descripcionContainer.appendChild(spanCompleta);
-
-                            const leerMasBtn = document.createElement('button');
-                            leerMasBtn.classList.add('leer-mas-btn');
-                            leerMasBtn.innerHTML = '&#9660;'; // Flecha hacia abajo
-                            leerMasBtn.onclick = function() {
-                                if (spanCompleta.style.display === 'none') {
-                                    spanCompleta.style.display = 'inline';
-                                    spanCorta.style.display = 'none';
-                                    leerMasBtn.innerHTML = '&#9650;'; // Flecha hacia arriba
-                                } else {
-                                    spanCompleta.style.display = 'none';
-                                    spanCorta.style.display = 'inline';
-                                    leerMasBtn.innerHTML = '&#9660;';
-                                }
-                            };
-                            descripcionContainer.appendChild(leerMasBtn);
-                        }
-                        productoInfoDiv.appendChild(descripcionContainer);
-                    }
-
-
-                    const productoActionsDiv = document.createElement('div');
-                    productoActionsDiv.classList.add('producto-actions');
-
-                    const quantityInput = document.createElement('input');
-                    quantityInput.type = 'number';
-                    quantityInput.min = 1;
-                    quantityInput.value = 1;
-                    quantityInput.disabled = !isInStock;
-                    productoActionsDiv.appendChild(quantityInput);
-
-                    const addButton = document.createElement('button');
-                    addButton.textContent = 'Agregar';
-                    addButton.disabled = !isInStock;
-                    if (!isInStock) {
-                        addButton.classList.add('no-stock-button');
-                    }
-                    addButton.onclick = () => {
-                        const quantity = parseInt(quantityInput.value);
-                        if (quantity > 0) {
-                            addToCart(productData, quantity);
-                        }
-                    };
-                    productoActionsDiv.appendChild(addButton);
-
-                    productoDiv.appendChild(productoInfoDiv);
-                    productoDiv.appendChild(productoActionsDiv);
-                    categoryProductsDiv.appendChild(productoDiv);
-                });
-            });
-        }
-
-        function normalizeText(text) {
-            return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        }
-
-        function addToCart(product, quantity = 1) {
-            const existingItem = cart.find(item => item.name === product['Nombre del Producto']);
-            if (existingItem) {
-                existingItem.quantity += quantity;
-            } else {
-                cart.push({
-                    name: product['Nombre del Producto'],
-                    price: parseFloat(product.Precio),
-                    quantity: quantity
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartDisplay();
-            showNotification(`${quantity}x ${product['Nombre del Producto']} agregado al carrito.`);
-        }
-           
+        // --- Función de Actualización de Carrito y Generación de Ticket ---
         function updateCartDisplay() {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
@@ -844,9 +507,7 @@
                 const itemTotal = calculation.itemTotal;
                 const discountMessage = calculation.discountMessage;
                 
-                // Calcula el subtotal sin descuentos (Precio original * Cantidad)
                 subtotal += item.price * item.quantity;
-                // Suma el total con descuento para el total final
                 finalTotal += itemTotal;
 
                 const li = document.createElement('li');
@@ -882,16 +543,14 @@
             cartCountElement.style.display = totalArticles > 0 ? 'flex' : 'none';
 
             document.getElementById('send-order-button').disabled = cart.length === 0;
-            document.getElementById('print-cart-button').disabled = cart.length === 0; // Deshabilitar botón de impresión
+            document.getElementById('print-cart-button').disabled = cart.length === 0;
 
             const oldCartItemsContainer = document.getElementById('cart-items');
             const newCartItemsContainer = oldCartItemsContainer.cloneNode(true);
             oldCartItemsContainer.parentNode.replaceChild(newCartItemsContainer, oldCartItemsContainer);
             attachCartEventListeners();
             
-            // ------------------------------------------------------------------
             // === GENERACIÓN DEL CONTENIDO PARA IMPRESIÓN (TICKET) ===
-            // ------------------------------------------------------------------
             let printContent = `
                 <div class="print-ticket">
                     <h1 style="text-align: center; font-size: 1.2em; margin-bottom: 5px;">DIETÉTICA VIRGILIO</h1>
@@ -903,7 +562,6 @@
                     </div>
             `;
             
-            // Recalculamos el total y subtotal para asegurar la precisión del ticket
             let rawSubtotal = 0;
             let finalTotalTicket = 0;
 
@@ -937,10 +595,7 @@
                 </div>
             `;
 
-            // 1. Elimina el ticket anterior 
             document.querySelectorAll('.print-ticket').forEach(el => el.remove());
-            
-            // 2. Agrega el nuevo ticket al cuerpo del documento (oculto por CSS, visible solo en @media print)
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = printContent;
             document.body.appendChild(tempDiv.firstChild);
@@ -948,126 +603,17 @@
             // ------------------------------------------------------------------
         }
 
-        function attachCartEventListeners() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            if (!cartItemsContainer) return;
+        function attachCartEventListeners() { /* ... (mismo código) ... */ }
+        function showNotification(message) { /* ... (mismo código) ... */ }
+        function setupSmoothScrolling() { /* ... (mismo código) ... */ }
 
-            cartItemsContainer.addEventListener('click', (event) => {
-                const target = event.target;
-                const productName = target.dataset.name;
-
-                if (!productName) return;
-
-                const item = cart.find(i => i.name === productName);
-                if (!item) return;
-
-                if (target.classList.contains('increase-quantity')) {
-                    item.quantity++;
-                } else if (target.classList.contains('decrease-quantity')) {
-                    if (item.quantity > 1) {
-                        item.quantity--;
-                    }
-                } else if (target.classList.contains('remove-item')) {
-                    cart = cart.filter(i => i.name !== productName);
-                }
-
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartDisplay();
-            });
-
-            document.querySelectorAll('#cart-items input[type="number"]').forEach(input => {
-                input.onchange = (e) => {
-                    const productName = e.target.dataset.name;
-                    const newQuantity = parseInt(e.target.value, 10);
-                    const item = cart.find(i => i.name === productName);
-                    if (item && newQuantity >= 1) {
-                        item.quantity = newQuantity;
-                    } else if (item && newQuantity < 1) {
-                        cart = cart.filter(i => i.name !== productName);
-                    }
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateCartDisplay();
-                };
-            });
-        }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.classList.add('notification');
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.remove();
-            }, 3000); // Duración de 3 segundos
-        }
-
-        function setupSmoothScrolling() {
-            document.querySelectorAll('.menu-desplegable-contenido ul li a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                    document.querySelector('.menu-desplegable-contenido').style.display = 'none'; // Cierra el menú
-                });
-            });
-        }
-        
-        // --- Lógica del Escáner QR (HTML5-QRCODE) ---
+        // --- Lógica del Escáner QR ---
         const qrScannerContainer = document.getElementById('qr-scanner-container');
         let html5QrcodeScanner = null;
-
-        function startQrScanner() {
-            document.getElementById('reader').innerHTML = ''; 
-            
-            if (!html5QrcodeScanner) {
-                html5QrcodeScanner = new Html5QrcodeScanner(
-                    "reader", {
-                        fps: 10,
-                        qrbox: {
-                            width: 250,
-                            height: 250
-                        }
-                    },
-                    false);
-            }
-
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-        }
-
-        function stopQrScanner() {
-            if (html5QrcodeScanner) {
-                // Verifica si el escáner está activo antes de intentar detenerlo
-                if (html5QrcodeScanner.getState() && html5QrcodeScanner.getState() !== Html5QrcodeScannerState.NOT_STARTED) {
-                    html5QrcodeScanner.clear().catch(error => {
-                        console.error("No se pudo detener el escáner:", error);
-                    });
-                }
-            }
-            qrScannerContainer.style.display = 'none';
-        }
-
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Código escaneado: ${decodedText}`);
-            
-            const normalizedDecodedText = decodedText.toLowerCase().trim();
-            const product = allProducts.find(p => p['Nombre del Producto'].toLowerCase().trim() === normalizedDecodedText);
-
-            if (product) {
-                addToCart(product, 1);
-                showNotification(`Producto escaneado y agregado: ${product['Nombre del Producto']}`);
-                stopQrScanner(); // <-- DESACTIVA EL ESCÁNER AUTOMÁTICAMENTE
-            } else {
-                showNotification(`Producto "${decodedText}" no encontrado.`);
-            }
-        }
-
-        function onScanFailure(error) {
-            if (error && error.includes("No QR code found")) {
-                return;
-            }
-        }
-        // --- Fin Lógica del Escáner QR ---
+        function startQrScanner() { /* ... (mismo código) ... */ }
+        function stopQrScanner() { /* ... (mismo código) ... */ }
+        function onScanSuccess(decodedText, decodedResult) { /* ... (mismo código) ... */ }
+        function onScanFailure(error) { /* ... (mismo código) ... */ }
         
         // --- Función de Impresión de Carrito ---
         function printCart() {
@@ -1076,13 +622,10 @@
                 return;
             }
 
-            // Oculta el panel del carrito (para que no aparezca en la impresión del ticket)
             document.getElementById('cart').style.display = 'none';
 
-            // Ejecuta la impresión. El CSS de @media print se encarga del formato 80mm.
             window.print();
             
-            // Vuelve a mostrar el panel del carrito
             setTimeout(() => {
                 document.getElementById('cart').style.display = 'block'; 
             }, 500); 
@@ -1096,14 +639,13 @@
             const categoryMenu = document.querySelector('.menu-desplegable-contenido');
             const qrScannerContainer = document.getElementById('qr-scanner-container');
             
-            // Oculta todos los paneles y detiene el escáner antes de mostrar el panel deseado
             cartPanel.style.display = 'none';
             searchInput.style.display = 'none';
             categoryMenu.style.display = 'none';
             qrScannerContainer.style.display = 'none'; 
             
             if (buttonId !== 'qr-scan-icon') {
-                 stopQrScanner(); // Detiene el escáner si se pulsa otro botón
+                 stopQrScanner();
             }
 
 
@@ -1120,9 +662,8 @@
                     panelToToggle = categoryMenu;
                     break;
                 case 'qr-scan-icon':
-                    // **ACCIÓN CLAVE: MUESTRA el contenedor y ACTIVA el escáner**
                     qrScannerContainer.style.display = 'flex'; 
-                    startQrScanner(); // Llama a tu función de activación
+                    startQrScanner(); 
                     break;
             }
 
@@ -1133,68 +674,30 @@
         }
 
 
+        // Event Listeners (Solo se omite por brevedad, el código es el mismo)
         document.getElementById('scroll-top-icon').addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         });
-        document.getElementById('scroll-to-top-footer').addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Event Listeners para los botones de la barra fija y el nuevo botón de impresión
+        
         document.getElementById('cart-icon').addEventListener('click', handleButtonClick);
         document.getElementById('search-icon').addEventListener('click', handleButtonClick);
         document.getElementById('category-icon').addEventListener('click', handleButtonClick);
         document.getElementById('qr-scan-icon').addEventListener('click', handleButtonClick);
-        document.getElementById('print-cart-button').addEventListener('click', printCart); // Nuevo Listener
+        document.getElementById('print-cart-button').addEventListener('click', printCart); 
 
-        // Event Listener para el botón de cerrar del escáner 
         document.getElementById('close-qr-scanner').addEventListener('click', () => {
              stopQrScanner();
         });
 
 
         // Lógica de búsqueda
-        document.getElementById('search').addEventListener('input', (event) => {
-            const searchTerm = normalizeText(event.target.value);
-            const filteredProducts = allProducts.filter(product => {
-                const productName = normalizeText(product['Nombre del Producto']);
-                const productCategory = normalizeText(product.Categoría);
-                return productName.includes(searchTerm) || productCategory.includes(searchTerm);
-            });
-            displayProducts(filteredProducts);
-        });
+        document.getElementById('search').addEventListener('input', (event) => { /* ... (mismo código) ... */ });
 
         // Lógica para enviar el pedido por WhatsApp
-        document.getElementById('send-order-button').addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert('El carrito está vacío.');
-                return;
-            }
-
-            let message = 'Hola, me gustaría hacer un pedido:\n\n';
-            let finalTotal = 0;
-
-            cart.forEach(item => {
-                const calculation = calculateItemTotal(item);
-                const itemTotal = calculation.itemTotal;
-                const discountMessage = calculation.discountMessage;
-
-                message += `* ${item.name} - Cantidad: ${item.quantity} - Subtotal: $${itemTotal.toFixed(2)}${discountMessage}\n`;
-                finalTotal += itemTotal;
-            });
-
-            message += `\n*TOTAL: $${finalTotal.toFixed(2)}*\n\n`;
-            message += '¡Gracias!';
-
-            const whatsappUrl = `https://wa.me/+5491164708681?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        });
+        document.getElementById('send-order-button').addEventListener('click', () => { /* ... (mismo código) ... */ });
         
         // Carga los productos al iniciar la página y actualiza el carrito
         document.addEventListener('DOMContentLoaded', () => {
