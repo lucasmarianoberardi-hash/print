@@ -292,6 +292,28 @@
                 background-color: transparent !important;
             }
         }
+        
+        /* Estilo para las notificaciones */
+        .notification {
+            position: fixed;
+            bottom: 75px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1100;
+            animation: fadeInOut 3s forwards;
+            font-size: 0.9em;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 20px); }
+        }
     </style>
 </head>
 <body>
@@ -370,7 +392,7 @@
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         // >>> URL ACTUALIZADA CON TU NUEVA COPIA <<<
-        const productsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtRvbHZgDDAVSfbF5R7HlIrv_2w8_ZZOx87Ssf96f9-5mBIIhg3_qofvXaK0TElyogxjN7BI7PJn2l/pub?output=csv';
+        const productsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtRvbHZgDDAVSfbF5R7HlIrv_2w8_ZZOx87Ssf96f9-5mBIIhg3_qofvXaK0TElyogxjN7BI7PJn2l/pub?gid=1169053887&single=true&output=csv';
         // <<< FIN URL ACTUALIZADA >>>
 
         // URLs de logos (reemplazar con las URLs reales)
@@ -432,7 +454,7 @@
                 allProducts = parseCSV(csvData);
 
                 // Después de cargar y parsear, actualiza la UI
-                displayProducts(allProducts);
+                displayProducts(allProducts); // MUESTRA TODOS LOS PRODUCTOS AL INICIO
                 generateCategoryMenu(allProducts);
                 setupSmoothScrolling(); 
                 updateCartDisplay(); 
@@ -478,7 +500,10 @@
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = `#${normalizeText(category)}`; 
-                link.textContent = category.replace(/🌻|🫚|🫘|❄️|-/g, '').trim(); 
+                
+                // Limpiamos los emojis/símbolos solo para la visualización del menú
+                link.textContent = category.replace(/[\uD800-\uDBFF\uDC00-\uDFFF\u2700-\u27BF\u2600-\u26FF\uFE00-\uFE0F]/g, '').trim(); 
+                
                 listItem.appendChild(link);
                 categoryMenu.appendChild(listItem);
             });
@@ -503,6 +528,8 @@
                 const normalizedCategoryId = normalizeText(categoryId);
                 let categoryDiv = document.createElement('div');
                 categoryDiv.classList.add('category');
+                
+                // EL ID AHORA USA LA FUNCIÓN MEJORADA PARA FUNCIONAR COMO ANCLA
                 categoryDiv.id = normalizedCategoryId;
 
                 const h2 = document.createElement('h2');
@@ -694,9 +721,19 @@
         }
         // >>> FIN FUNCIÓN displayProducts CON PAGINACIÓN <<<
 
+        // >>> FUNCIÓN normalizeText CORREGIDA PARA ENLACES SEGUROS <<<
         function normalizeText(text) {
-            return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            // 1. Convertir a minúsculas.
+            // 2. Reemplazar caracteres que no sean letras, números o espacios con un guion.
+            // 3. Reemplazar cualquier espacio o grupo de guiones con un solo guion.
+            // 4. Eliminar guiones al inicio o al final.
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '') 
+                .replace(/[\s-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
         }
+        // <<< FIN FUNCIÓN CORREGIDA >>>
 
         function addToCart(product, quantity = 1) {
             const existingItem = cart.find(item => item.name === product['Nombre del Producto']);
@@ -877,9 +914,16 @@
             document.querySelectorAll('.menu-desplegable-contenido ul li a').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    // Utiliza el `href` que ahora es un ancla limpia
+                    const targetId = this.getAttribute('href'); 
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                         targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    
                     document.querySelector('.menu-desplegable-contenido').style.display = 'none'; 
                 });
             });
@@ -888,15 +932,14 @@
         // --- Lógica del Escáner QR (CORREGIDA PARA INICIO DIRECTO) ---
         
         function initializeQrCodeScanner() {
+             // Solo inicializa la librería una vez si aún no existe
             if (!html5QrCode) {
                 html5QrCode = new Html5Qrcode(qrCodeRegionId);
             }
         }
         
         function startQrScanner() {
-            if (!html5QrCode) {
-                initializeQrCodeScanner();
-            }
+            initializeQrCodeScanner(); // Asegura que la clase esté lista
 
             // Configuración de escaneo 
             const config = {
@@ -904,7 +947,7 @@
                 qrbox: { width: 250, height: 250 }
             };
 
-            // Inicia el escaneo. 
+            // Inicia el escaneo. La llamada debe ser robusta.
             html5QrCode.start(
                 { facingMode: "environment" }, // Prioriza la cámara trasera
                 config,
@@ -913,19 +956,20 @@
             )
             .catch(err => {
                 console.error("🔴 Error al iniciar el escáner QR. Verifica permisos o HTTPS.", err);
-                // Muestra una notificación de error al usuario
                 showNotification('Error al acceder a la cámara. Asegúrate de tener permisos o usa HTTPS.');
+                stopQrScanner(); // Cierra el contenedor si falla
             });
         }
 
         function stopQrScanner() {
             if (html5QrCode && html5QrCode.isScanning) {
+                // Usa una función de envoltura para manejar la promesa de stop()
                 html5QrCode.stop()
-                    .then(ignore => {
-                        // console.log("Escáner detenido.");
+                    .then(() => { 
+                        // Éxito al detener
                     })
                     .catch(err => {
-                        // console.error("Error al detener el escáner:", err); 
+                        console.warn("Advertencia al detener el escáner (puede que ya estuviera detenido):", err); 
                     });
             }
             qrScannerContainer.style.display = 'none';
@@ -935,6 +979,7 @@
             console.log(`Código escaneado: ${decodedText}`);
             
             const normalizedDecodedText = decodedText.toLowerCase().trim();
+            // Intenta encontrar el producto por su nombre
             const product = allProducts.find(p => p['Nombre del Producto'].toLowerCase().trim() === normalizedDecodedText);
 
             if (product) {
@@ -968,6 +1013,7 @@
         }
 
 
+        // >>> FUNCIÓN DE MANEJO DE CLIC CORREGIDA PARA QR <<<
         function handleButtonClick(event) {
             const buttonId = event.currentTarget.id;
             const cartPanel = document.getElementById('cart');
@@ -980,8 +1026,9 @@
             searchInput.style.display = 'none';
             categoryMenu.style.display = 'none';
             
+            // Detiene el escáner si se pulsa CUALQUIER otro botón
             if (buttonId !== 'qr-scan-icon') {
-                 stopQrScanner(); // Detiene el escáner si se pulsa otro botón
+                 stopQrScanner();
             }
 
 
@@ -998,17 +1045,18 @@
                     panelToToggle = categoryMenu;
                     break;
                 case 'qr-scan-icon':
-                    // Muestra el contenedor y Llama a la función de inicio directo
+                    // Lógica de Escáner: Muestra el contenedor y LLAMA A START
                     qrScannerContainer.style.display = 'flex'; 
-                    startQrScanner(); 
-                    break;
+                    startQrScanner(); // <<<<<<<<<<<<< LLAMADA DIRECTA
+                    return; // Detiene la ejecución aquí para no ocultar el escáner inmediatamente
             }
 
-            if (panelToToggle && buttonId !== 'qr-scan-icon') {
+            if (panelToToggle) {
                 const isHidden = panelToToggle.style.display === 'none' || panelToToggle.style.display === '';
                 panelToToggle.style.display = isHidden ? 'block' : 'none';
             }
         }
+        // >>> FIN FUNCIÓN DE MANEJO DE CLIC CORREGIDA <<<
 
 
         // Event Listener para volver arriba (el ícono del footer)
