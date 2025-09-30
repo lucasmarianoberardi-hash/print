@@ -3,118 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dietética Virgilio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/dist/html5-qrcode.min.js"></script>
+    <title>Dietética Virgilio | Catálogo de Productos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
-        /* Estilos CSS */
-
-        /* Estilos generales */
+        /* ======================================================= */
+        /* === 1. ESTILOS BASE Y TIPOGRAFÍA === */
+        /* ======================================================= */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding-bottom: 70px; /* Espacio para la barra fija inferior (footer) */
-            background-color: #f4f4f4;
+            padding-bottom: 70px; /* Espacio para la barra fija inferior */
+            background-color: #f8f8f8; /* Un gris muy suave */
+            color: #333;
         }
 
         /* ---------------------------------------------------------------------------------- */
-        /* --- FOOTER/BARRA DE ÍCONOS FIJA --- */
+        /* --- 2. BARRA DE ÍCONOS FIJA (FOOTER) --- */
         /* ---------------------------------------------------------------------------------- */
         .fixed-icons {
             position: fixed;
-            bottom: 0;         /* Pegado al borde inferior */
-            left: 0;           
-            right: 0;          
-            top: auto;         
-            z-index: 1000;     
-            background-color: #333; 
-            padding: 5px 0;    
-            display: flex; 
-            flex-direction: row; 
-            justify-content: space-around; 
-            align-items: center; 
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4); 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #343a40; /* Gris oscuro / Negro */
+            padding: 5px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid #495057;
         }
 
         .fixed-icons button {
-            background-color: transparent; 
-            color: white; 
+            background-color: transparent;
+            color: white;
             border: none;
-            padding: 10px 5px; 
-            margin: 0;
+            padding: 10px 5px;
             cursor: pointer;
-            flex-grow: 1;     
+            flex-grow: 1;
             text-align: center;
-            position: relative; 
-            transition: background-color 0.3s ease;
+            transition: background-color 0.2s ease;
+            font-size: 1.2em; /* Íconos un poco más grandes */
+            position: relative;
         }
 
         .fixed-icons button:hover,
         .fixed-icons button:focus {
-            background-color: rgba(255, 255, 255, 0.2); 
+            background-color: rgba(255, 255, 255, 0.15);
+            outline: none;
         }
 
         /* Estilo para el contador del carrito */
         #cart-count {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: red;
+            top: 0px;
+            right: 15%;
+            background-color: #dc3545; /* Rojo vibrante */
             color: white;
             border-radius: 50%;
-            padding: 3px 6px;
+            padding: 2px 5px;
             font-size: 0.7em;
-            display: flex; 
+            font-weight: bold;
+            display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 18px; 
             height: 18px;
-            width: 18px;
+            transform: translate(50%, 0);
         }
 
-        /* Contenedor principal de productos */
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 3. CONTENEDOR PRINCIPAL Y PRODUCTOS --- */
+        /* ---------------------------------------------------------------------------------- */
         #products {
-            padding: 20px;
+            padding: 10px 20px 20px;
+        }
+        
+        .category {
+            margin-bottom: 40px;
+        }
+        
+        .category h2 {
+            font-size: 1.8em;
+            color: #007bff; /* Azul */
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
 
-        /* Estilos para los contenedores de productos */
         .category-products {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px; 
-            justify-content: space-between;
+            gap: 15px; /* Espaciado entre productos */
+            justify-content: flex-start; /* Alineación inicial */
         }
 
         .producto {
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 15px;
             text-align: center;
-            width: calc(50% - 10px); 
+            width: calc(50% - 7.5px); /* Dos columnas con gap */
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s;
         }
         
-        /* Contenedor de búsqueda */
+        .producto:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .producto img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px; 
+            object-fit: contain;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: opacity 0.3s;
+        }
+
+        .producto h3 {
+            font-size: 1em;
+            margin: 5px 0;
+            color: #212529; /* Negro oscuro */
+            min-height: 2.5em; /* Asegura espacio para 2 líneas de título */
+        }
+
+        .producto p {
+            font-size: 0.9em;
+            color: #6c757d; /* Gris para precios */
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        /* Estilos de no stock */
+        .no-stock {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+        
+        .no-stock-button {
+            background-color: #6c757d !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+        }
+
+        /* Contenedor de propiedades (logos) */
+        .propiedades-container {
+            min-height: 30px; 
+            margin: 5px 0;
+        }
+        
+        .logo-propiedad {
+            width: 25px;
+            height: 25px;
+            margin: 0 3px;
+            border-radius: 50%;
+            object-fit: cover;
+            vertical-align: middle;
+        }
+
+        /* Botones de acción del producto */
+        .producto-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .producto-actions input[type="number"] {
+            width: 30%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            text-align: center;
+            flex-grow: 0;
+        }
+
+        .producto-actions button {
+            flex-grow: 1;
+            padding: 8px;
+            background-color: #28a745; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .producto-actions button:hover:not(:disabled) {
+            background-color: #1e7e34;
+        }
+        
+        /* Cargar más */
+        .load-more-btn {
+            background-color: #007bff !important;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px !important;
+            transition: background-color 0.2s;
+        }
+        .load-more-btn:hover {
+            background-color: #0056b3 !important;
+        }
+
+
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 4. BÚSQUEDA Y MENÚ --- */
+        /* ---------------------------------------------------------------------------------- */
+        
+        /* Campo de búsqueda */
         #search {
             position: fixed;
             top: 10px; 
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             padding: 10px;
             z-index: 999;
-            display: none;
             border-radius: 8px;
-            border: 1px solid #ccc;
+            border: 1px solid #007bff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            display: none; /* Se oculta/muestra por JS */
         }
         
-        /* Estilos del menú desplegable de categorías */
+        /* Menú de categorías */
         .menu-desplegable-contenido {
             position: fixed;
             top: 10px;
@@ -124,10 +249,11 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 999;
-            display: none;
-            padding: 10px;
+            padding: 10px 0; /* Ajuste para que los links estén alineados */
             max-height: 80vh;
             overflow-y: auto;
+            min-width: 150px;
+            display: none; /* Se oculta/muestra por JS */
         }
         
         .menu-desplegable-contenido ul {
@@ -142,28 +268,30 @@
             display: block;
             padding: 8px 15px;
             transition: background-color 0.2s;
+            font-size: 1em;
         }
         
         .menu-desplegable-contenido a:hover {
             background-color: #f0f0f0;
         }
 
-        /* Estilos del Carrito */
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 5. CARRITO (PANEL LATERAL) --- */
+        /* ---------------------------------------------------------------------------------- */
         #cart {
             position: fixed;
             top: 0;
             right: 0;
             width: 90%;
-            max-width: 350px;
+            max-width: 380px; /* Un poco más ancho */
             height: 100%;
-            background-color: white;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            background-color: #f8f9fa; /* Fondo blanco suave */
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
             padding: 20px;
             z-index: 1050;
             display: none;
             overflow-y: auto;
-            transform: translateX(0);
-            transition: transform 0.3s ease-out;
+            box-sizing: border-box;
         }
         
         .cart-header {
@@ -171,7 +299,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 3px solid #007bff;
             padding-bottom: 10px;
         }
         
@@ -185,69 +313,230 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed #ddd;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            gap: 5px;
         }
-
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-details p:first-child {
+            font-weight: bold;
+            margin: 0 0 3px 0;
+            font-size: 0.95em;
+        }
+        
+        .cart-item-details p:last-child {
+            margin: 0;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-item-quantity button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            line-height: 1;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .cart-item-quantity input[type="number"] {
+            width: 40px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 5px 0;
+        }
+        
+        .remove-item {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            line-height: 1;
+            font-weight: bold;
+            font-size: 1em;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        /* Botones de acción del carrito */
         #send-order-button, #print-cart-button {
             width: 100%;
             padding: 15px;
-            margin-top: 10px; 
+            margin-top: 15px; 
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 1.1em;
             cursor: pointer;
             transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         #print-cart-button {
             background-color: #007bff; 
         }
+        #print-cart-button:hover {
+            background-color: #0056b3; 
+        }
         
         #send-order-button {
-            background-color: #25D366; 
+            background-color: #25D366; /* Verde WhatsApp */
         }
-
-        /* Contenedor del Escáner QR */
+        #send-order-button:hover {
+            background-color: #1daa51; 
+        }
+        
+        #send-order-button:disabled, #print-cart-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 6. ESCÁNER QR --- */
+        /* ---------------------------------------------------------------------------------- */
         #qr-scanner-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9); /* Fondo muy oscuro */
             z-index: 2000;
             display: none; 
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
         #qr-scanner-content {
             background-color: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             position: relative;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
         
-        /* Media Queries para diseño responsive de productos */
+        #qr-scanner-content h2 {
+            margin-top: 0;
+            font-size: 1.3em;
+            color: #007bff;
+            text-align: center;
+        }
+        
+        #close-qr-scanner {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        /* Estilos específicos de la librería html5-qrcode (ajustes visuales) */
+        #reader {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 7. NOTIFICACIONES Y DESCRIPCIONES --- */
+        /* ---------------------------------------------------------------------------------- */
+        
+        /* Estilo para las notificaciones */
+        .notification {
+            position: fixed;
+            bottom: 75px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1100;
+            animation: fadeInOut 3s forwards;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 20px); }
+        }
+        
+        /* Descripción corta/larga */
+        .descripcion-container {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #495057;
+            text-align: left;
+            min-height: 1.5em; /* Evita saltos de diseño */
+        }
+        
+        .leer-mas-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            padding: 0 5px;
+            font-size: 0.9em;
+            vertical-align: top;
+        }
+
+        /* ---------------------------------------------------------------------------------- */
+        /* --- 8. MEDIA QUERIES (RESPONSIVE) --- */
+        /* ---------------------------------------------------------------------------------- */
         @media (min-width: 768px) {
             .producto {
-                width: calc(33.333% - 13.333px); 
+                width: calc(33.333% - 10px); /* Tres columnas */
             }
         }
         
         @media (min-width: 1024px) {
             .producto {
-                width: calc(25% - 15px); 
+                width: calc(25% - 11.25px); /* Cuatro columnas */
+            }
+            #search {
+                max-width: 600px;
+            }
+            .menu-desplegable-contenido {
+                right: 20px;
             }
         }
         
-        /* ======================================================= */
-        /* === ESTILOS ESPECÍFICOS PARA LA IMPRESIÓN (TICKET) === */
-        /* ======================================================= */
+        /* ---------------------------------------------------------------------------------- */
+        /* === 9. ESTILOS ESPECÍFICOS PARA LA IMPRESIÓN (TICKET) === */
+        /* ---------------------------------------------------------------------------------- */
         @media print {
             /* 1. Ocultar todo lo que no sea el contenido del ticket */
             body > *:not(.print-ticket) {
@@ -261,9 +550,10 @@
                 max-width: 80mm;
                 margin: 0;
                 padding: 5mm; 
-                font-family: monospace, Courier New, monospace; 
+                font-family: monospace, 'Courier New', monospace; /* Fuente de recibo */
                 font-size: 9pt; 
                 color: black;
+                page-break-after: always; /* Asegura que el ticket se imprima en su propia sección */
             }
 
             /* 3. Resetear márgenes y fondos de página */
@@ -280,91 +570,60 @@
                 background-color: transparent !important;
             }
         }
-        
-        /* Estilo para las notificaciones */
-        .notification {
-            position: fixed;
-            bottom: 75px; 
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            z-index: 1100;
-            animation: fadeInOut 3s forwards;
-            font-size: 0.9em;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, 20px); }
-            10% { opacity: 1; transform: translate(-50%, 0); }
-            90% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, 20px); }
-        }
     </style>
 </head>
 <body>
-    <div class="fixed-icons">
-        <button id="scroll-top-icon" aria-label="Volver al inicio">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-        
-        <button id="cart-icon" class="icon-button" aria-label="Ver carrito de compras">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-count" class="cart-count">0</span>
-        </button>
-        
-        <div class="menu-desplegable">
-            <button id="category-icon" class="icon-button" aria-label="Mostrar categorías">
-                <i class="fas fa-bars"></i>
-            </button>
-            <nav class="menu-desplegable-contenido" aria-label="Menú de categorías">
-                <ul>
-                </ul>
-            </nav>
-        </div>
-        
-        <button id="search-icon" class="icon-button" aria-label="Buscar productos">
-            <i class="fas fa-search"></i>
-        </button>
-        
-        <button id="qr-scan-icon" class="icon-button" aria-label="Escanear código QR">
-            <i class="fas fa-qrcode"></i>
-        </button>
-    </div>
-
-    <input type="text" id="search" placeholder="Buscar producto..." aria-label="Buscar productos" autocomplete="off">
-
-    <div id="qr-scanner-container">
+    
+    <div id="qr-scanner-container" style="display: none;">
         <div id="qr-scanner-content">
-            <button id="close-qr-scanner" aria-label="Cerrar escáner">&times;</button>
-            <h2>Escanear Código QR</h2>
-            <div id="reader" style="width: 100%;"></div> 
+            <h2>Escanea el Código QR</h2>
+            <div id="reader"></div> 
+            <button id="close-qr-scanner"><i class="fas fa-times"></i></button>
         </div>
     </div>
+    
+    <input type="text" id="search" placeholder="Buscar productos o categorías...">
+    
+    <div class="menu-desplegable-contenido" style="display: none;">
+        <ul>
+            </ul>
+    </div>
 
-    <div id="cart" aria-labelledby="cart-icon">
+    <div id="cart" style="display: none;">
         <div class="cart-header">
-            <h2>Mi Carrito</h2>
-            <img src="https://media.cylex.com.ar/companies/1128/0419/logo/logo.jpg" alt="Logo Dietética Virgilio" style="max-height: 40px;">
+            <h3>🛒 Tu Carrito de Pedido</h3>
         </div>
-        <div id="cart-items-container">
-            <ul id="cart-items"></ul>
+        
+        <ul id="cart-items">
+            </ul>
+        
+        <div class="cart-summary">
+            <p>Subtotal: $<span id="cart-subtotal">0.00</span></p>
+            <p id="cart-discount-message" style="color: green; font-weight: bold;"></p>
+            <hr>
+            <h3>Total: $<span id="cart-total">0.00</span></h3>
         </div>
-        <p style="font-size: 1.1em; font-weight: bold; margin-top: 15px;">Subtotal: $<span id="cart-subtotal">0</span></p>
-        <p style="font-size: 0.9em; color: green; font-weight: bold;" id="cart-discount-message"></p>
-        <p style="font-size: 1.2em; font-weight: bold; margin-top: 5px;">Total final: $<span id="cart-total">0</span></p>
         
-        <button id="print-cart-button" class="action-button">
-            <i class="fas fa-print"></i> Imprimir Ticket
-        </button>
+        <button id="print-cart-button"><i class="fas fa-print"></i> Imprimir Ticket</button>
+        <button id="send-order-button"><i class="fab fa-whatsapp"></i> Enviar Pedido por WhatsApp</button>
         
-        <button id="send-order-button">Enviar Pedido</button>
+        <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">* Los descuentos por volumen se aplican automáticamente en el total.</p>
     </div>
 
-    <section id="products" class="container">
-        </section>
+    <div id="products">
+        <h1>Catálogo de Productos</h1>
+        </div>
+
+    <div class="fixed-icons">
+        <button id="scroll-top-icon"><i class="fas fa-arrow-up"></i></button>
+        <button id="search-icon"><i class="fas fa-search"></i></button>
+        <button id="category-icon"><i class="fas fa-list"></i></button>
+        <button id="qr-scan-icon"><i class="fas fa-qrcode"></i></button>
+        <button id="cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count" style="display: none;">0</span>
+        </button>
+    </div>
 
     <script>
         // Variable global para rastrear el límite de productos visibles por categoría
@@ -391,8 +650,9 @@
         let allProducts = []; 
         
         const qrScannerContainer = document.getElementById('qr-scanner-container');
-        const qrCodeRegionId = "reader";
-        let html5QrCode = null; 
+        
+        // Variable para la instancia del escáner
+        let html5QrcodeScanner = null; 
 
         // Constantes para la bonificación 
         const DISCOUNT_THRESHOLD_10 = 10;
@@ -443,12 +703,10 @@
                 }
 
                 // Después de cargar y parsear, actualiza la UI
-                displayProducts(allProducts); // MUESTRA TODOS LOS PRODUCTOS AL INICIO
+                displayProducts(allProducts); 
                 generateCategoryMenu(allProducts);
                 setupSmoothScrolling(); 
                 updateCartDisplay(); 
-                
-                initializeQrCodeScanner(); 
 
             } catch (error) {
                 console.error('🔴 Error al cargar los productos:', error);
@@ -790,6 +1048,7 @@
             oldCartItemsContainer.parentNode.replaceChild(newCartItemsContainer, oldCartItemsContainer);
             attachCartEventListeners();
             
+            // --- INICIO: LÓGICA DE GENERACIÓN DEL TICKET DE IMPRESIÓN ---
             let printContent = `
                 <div class="print-ticket">
                     <h1 style="text-align: center; font-size: 1.2em; margin-bottom: 5px;">DIETÉTICA VIRGILIO</h1>
@@ -834,11 +1093,14 @@
                 </div>
             `;
 
+            // 1. Elimina cualquier ticket anterior en el body
             document.querySelectorAll('.print-ticket').forEach(el => el.remove());
+            // 2. Crea un div temporal para contener el HTML del ticket
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = printContent;
-            document.body.appendChild(tempDiv.firstChild);
-
+            // 3. Añade el primer hijo (el div.print-ticket) al body de la página
+            document.body.appendChild(tempDiv.firstChild); 
+            // --- FIN: LÓGICA DE GENERACIÓN DEL TICKET DE IMPRESIÓN ---
         }
 
         function attachCartEventListeners() {
@@ -912,62 +1174,62 @@
             });
         }
         
-        // --- Lógica del Escáner QR ---
-        
-        function initializeQrCodeScanner() {
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode(qrCodeRegionId);
-            }
-        }
+        // --- Lógica del Escáner QR (AJUSTADA CON HTML5QRCODESCANNER) ---
         
         function startQrScanner() {
-            initializeQrCodeScanner(); 
+            if (!html5QrcodeScanner) {
+                // Instancia el escáner si no existe. El tercer parámetro (false) indica que no muestre la UI de la librería.
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader", {
+                        fps: 10,
+                        qrbox: {
+                            width: 250,
+                            height: 250
+                        }
+                    },
+                    false);
+            }
 
-            const config = {
-                fps: 10,
-                qrbox: { width: 250, height: 250 }
-            };
-
-            html5QrCode.start(
-                { facingMode: "environment" }, 
-                config,
-                onScanSuccess,
-                onScanFailure
-            )
-            .catch(err => {
-                console.error("🔴 Error al iniciar el escáner QR. Verifica permisos o HTTPS.", err);
-                showNotification('Error al acceder a la cámara. Asegúrate de tener permisos o usa HTTPS.');
-                stopQrScanner(); 
-            });
+            // Inicia el renderizado. Esto pide permisos y comienza el escaneo.
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
         }
 
         function stopQrScanner() {
-            if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop()
-                    .then(() => {})
-                    .catch(err => {
-                        console.warn("Advertencia al detener el escáner:", err); 
-                    });
+            if (html5QrcodeScanner) {
+                // Limpia el escáner y detiene la cámara
+                html5QrcodeScanner.clear().catch(error => {
+                    // Este error es común si se detiene justo después de empezar. Lo dejamos como advertencia.
+                    console.warn("Advertencia al detener el escáner:", error); 
+                });
             }
+            // Oculta el contenedor del escáner en la UI
             qrScannerContainer.style.display = 'none';
         }
 
         function onScanSuccess(decodedText, decodedResult) {
             console.log(`Código escaneado: ${decodedText}`);
             
+            // BUSCAMOS EL PRODUCTO (coincidencia exacta, sin espacios ni mayúsculas)
             const normalizedDecodedText = decodedText.toLowerCase().trim();
             const product = allProducts.find(p => p['Nombre del Producto'].toLowerCase().trim() === normalizedDecodedText);
 
             if (product) {
                 addToCart(product, 1);
                 showNotification(`Producto escaneado y agregado: ${product['Nombre del Producto']}`);
+                // ACCIÓN CLAVE: Detener y cerrar el escáner al encontrar el producto.
                 stopQrScanner(); 
             } else {
-                showNotification(`Producto "${decodedText}" no encontrado. Asegúrese de escanear el nombre exacto del producto.`);
+                showNotification(`Producto "${decodedText}" no encontrado. Verifique el nombre en la hoja de cálculo.`);
             }
         }
 
         function onScanFailure(error) {
+            // Ignorar errores menores (como "no se encontró QR") para evitar spam en la consola.
+            if (error.includes("No QR code found") || error.includes("No stream")) {
+                return;
+            }
+            // Muestra errores serios (como problemas de cámara/permisos)
+            console.warn(`Error de escaneo: ${error}`);
         }
         // --- Fin Lógica del Escáner QR ---
         
@@ -979,32 +1241,32 @@
             }
 
             document.getElementById('cart').style.display = 'none';
-            window.print();
             
+            // Retraso para asegurar que el DOM ha procesado el ticket antes de imprimir
             setTimeout(() => {
-                document.getElementById('cart').style.display = 'block'; 
-            }, 500); 
+                window.print();
+                
+                // Vuelve a mostrar el carrito después de un breve tiempo
+                setTimeout(() => {
+                    document.getElementById('cart').style.display = 'block'; 
+                }, 500); 
+            }, 50); // Delay de 50ms
         }
 
 
-        // >>> FUNCIÓN DE MANEJO DE CLIC (CORREGIDA PARA QR) <<<
+        // --- FUNCIÓN DE MANEJO DE CLIC ---
         function handleButtonClick(event) {
             const buttonId = event.currentTarget.id;
             const cartPanel = document.getElementById('cart');
             const searchInput = document.getElementById('search');
             const categoryMenu = document.querySelector('.menu-desplegable-contenido');
-            const qrScannerContainer = document.getElementById('qr-scanner-container');
             
-            // Oculta todos los paneles
+            // 1. Siempre detiene el escáner y oculta otros paneles al presionar un ícono.
+            stopQrScanner();
             cartPanel.style.display = 'none';
             searchInput.style.display = 'none';
             categoryMenu.style.display = 'none';
             
-            // Detiene el escáner si se pulsa CUALQUIER otro botón
-            if (buttonId !== 'qr-scan-icon') {
-                 stopQrScanner();
-            }
-
             let panelToToggle = null;
 
             switch (buttonId) {
@@ -1018,10 +1280,10 @@
                     panelToToggle = categoryMenu;
                     break;
                 case 'qr-scan-icon':
-                    // Muestra el contenedor y LLAMA A START
+                    // ACCIÓN CLAVE: Muestra el contenedor y LLAMA A START
                     qrScannerContainer.style.display = 'flex'; 
                     startQrScanner(); 
-                    return; 
+                    return; // Terminamos aquí, no hay que ocultar nada más
             }
 
             if (panelToToggle) {
@@ -1029,7 +1291,7 @@
                 panelToToggle.style.display = isHidden ? 'block' : 'none';
             }
         }
-        // >>> FIN FUNCIÓN DE MANEJO DE CLIC <<<
+        // --- FIN FUNCIÓN DE MANEJO DE CLIC ---
 
 
         // Event Listener para volver arriba
@@ -1040,14 +1302,14 @@
             });
         });
         
-        // Event Listeners para los botones
+        // Event Listeners para los botones de la barra inferior
         document.getElementById('cart-icon').addEventListener('click', handleButtonClick);
         document.getElementById('search-icon').addEventListener('click', handleButtonClick);
         document.getElementById('category-icon').addEventListener('click', handleButtonClick);
         document.getElementById('qr-scan-icon').addEventListener('click', handleButtonClick);
         document.getElementById('print-cart-button').addEventListener('click', printCart); 
 
-        // Event Listener para el botón de cerrar del escáner 
+        // Event Listener para el botón de cerrar del escáner (usa la función stop)
         document.getElementById('close-qr-scanner').addEventListener('click', () => {
              stopQrScanner();
         });
@@ -1097,4 +1359,5 @@
         });
     </script>
 </body>
+
 </html>
