@@ -369,8 +369,9 @@
         }
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Asegúrate de que esta URL esté PUBLICADA y ACCESIBLE
-        const productsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUwKkCP-utyR4uJzAuXrCr2div8FCqsTRN57HMLuY_a0BzuThRPn_ZkfymgPoElcPg5i6UsPEuvGGN/pub?output=csv';
+        // >>> URL ACTUALIZADA CON TU NUEVA COPIA <<<
+        const productsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtRvbHZgDDAVSfbF5R7HlIrv_2w8_ZZOx87Ssf96f9-5mBIIhg3_qofvXaK0TElyogxjN7BI7PJn2l/pub?gid=1169053887&single=true&output=csv';
+        // <<< FIN URL ACTUALIZADA >>>
 
         // URLs de logos (reemplazar con las URLs reales)
         const logoSinTaccUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5T7nDfaM_05QQOmcKUhuZoU6CnTZt0Ig9bQ&s';
@@ -385,7 +386,6 @@
         const qrCodeRegionId = "reader";
         let html5QrCode = null; // Usamos Html5QrCode
         // >>> FIN CÓDIGO CLAVE <<<
-
 
         // Constantes para la bonificación 
         const DISCOUNT_THRESHOLD_10 = 10;
